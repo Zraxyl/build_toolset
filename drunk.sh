@@ -85,6 +85,21 @@ export ARCH=$(cat $P_ROOT/tools/tmp/is_arch)
 # Feed mkiso creator module
 source $P_ROOT/tools/shell/modules/mk_iso.sh
 
+# Feed mkiso creator module
+source $P_ROOT/tools/shell/modules/dialog_manager.sh
+
+# Read the filename which is named by symlink
+
+tmp010=$(basename $0)
+
+if [ "$tmp010" = "dialog" ]; then
+    # If match then run dialog
+    dialog_main
+
+    # After good exit clean the tmp
+    clean_tmp
+fi
+
 ##
 #   Main Functions
 ##

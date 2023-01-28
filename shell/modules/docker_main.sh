@@ -20,7 +20,7 @@ docker_initial_setup() {
         sleep 1
 
         # Setup base docker container
-        #docker_setup_container
+        docker_setup_container
 
         # Start our new container
         docker_container_start
@@ -54,6 +54,9 @@ docker_initial_sysedit() {
 
     # Add developer user ( used to build pkg's without root
     docker_run_cmd useradd developer -m -g wheel
+
+    # Copy over local bottle.conf
+    docker_run_cmd cp -f /home/developer/DRUNK/tools/docker/bottle.conf /etc/bottle.conf
 
     # Perms fixes + bottle changes
     docker_run_cmd bash -c /home/developer/DRUNK/tools/docker/developer.sh
