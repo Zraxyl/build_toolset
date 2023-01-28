@@ -20,14 +20,22 @@ set_aarch64() {
 	arch_check_and_warn aarch64
 
 	# Now do the trick
-	drunk_debug "Selected AArch64"
-	echo 'aarch64' > $P_ROOT/tools/tmp/is_arch
+	if [ -f "$P_ROOT/tools/tmp/is_arch" ]; then
+		drunk_debug "Already set to AArch64"
+	else
+		drunk_debug "Arch set to AArch64"
+		echo 'aarch64' > $P_ROOT/tools/tmp/is_arch
+	fi
 }
 
 set_x86_64() {
 	# Now do the trick
-        drunk_debug "Selected X86_64"
-        echo 'x86_64' > $P_ROOT/tools/tmp/is_arch
+	if [ -f "$P_ROOT/tools/tmp/is_arch" ]; then
+		drunk_debug "Already set to X86_64"
+	else
+		drunk_debug "Arch set to X86_64"
+		echo 'x86_64' > $P_ROOT/tools/tmp/is_arch
+	fi
 }
 
 set_arch() {
