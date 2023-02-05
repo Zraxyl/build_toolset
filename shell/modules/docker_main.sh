@@ -4,7 +4,7 @@
 
 docker_initial_setup() {
     # Start dockerd from systemctl
-    sudo systemctl start docker
+    sudo systemctl restart docker
 
     if [ -f $P_ROOT/tools/checks/docker_ready ]; then
         drunk_debug "Docker image is already downloaded, starting the container now"
@@ -32,16 +32,20 @@ docker_initial_setup() {
         # Tell the script that docker image is pulled
         touch $P_ROOT/tools/checks/docker_ready
 
-        # Lets make a image from custom container
-        if [ ! -f $P_ROOT/tools/checks/docker_kde_ready ]; then
-            docker_run_cmd rm -rf /var/lib/bottle/sync/*
-            docker_run_cmd bottle -Syu --needed --noconfirm --disable-download-timeout qt5 qt6
+        docker_check_kde_health
+    fi
+}
 
-            drunk_message "Creating new image for drunk_kde"
-            sudo docker commit $DOCKER_CONTAINER_NAME drunk_kde
+docker_check_kde_health() {
+    # Lets make a image from custom container
+    if [ ! -f $P_ROOT/tools/checks/docker_kde_ready ]; then
+        docker_run_cmd rm -rf /var/lib/bottle/sync/*
+        docker_run_cmd bottle -Syu --needed --noconfirm --disable-download-timeout qt5 qt6
 
-            docker_reset
-        fi
+        drunk_message "Creating new image for drunk_kde"
+        sudo docker commit $DOCKER_CONTAINER_NAME drunk_kde
+
+        docker_reset
     fi
 }
 

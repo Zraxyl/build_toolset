@@ -328,7 +328,7 @@ make_efi() {
     as_root chown -R root mnt/
 
     # make initrd for efi image
-    kver=$(as_root basename $ISO_ROOT/rootfs/system/lib/modules/5.*)
+    kver=$(as_root basename $ISO_ROOT/rootfs/system/lib/modules/6.*)
     as_root dracut --kver $kver -m "base lvm kernel-modules" -a "dmsquash-live" --add-drivers squashfs --filesystems "squashfs ext4 ext3" mnt/drunk-init.img --force
 
     sleep 2 && sync
