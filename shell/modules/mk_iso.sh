@@ -419,7 +419,7 @@ rootfs_plasma() {
 
     as_root mkdir -pv system
 
-    as_root bottle-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-plasma-clean
+    as_root bottle-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-plasma-clean plymouth
 }
 
 rootfs_xfce() {
