@@ -7,15 +7,15 @@ docker_initial_setup() {
     sudo systemctl restart docker
 
     if [ -f $P_ROOT/tools/checks/docker_ready ]; then
-        drunk_debug "Docker image is already downloaded, starting the container now"
-        drunk_message "Starting docker container ( sudo may be needed )"
+        msg_debug "Docker image is already downloaded, starting the container now"
+        message "Starting docker container ( sudo may be needed )"
         docker_container_start
 
         sleep 2
 
     else
-        drunk_message "Docker initial setup will ask for passwd"
-        sudo docker pull hilledkinged/drunk:latest
+        message "Docker initial setup will ask for passwd"
+        sudo docker pull ${DOCKER_IMAGE_NAME}:latest
 
         sleep 1
 
@@ -42,8 +42,8 @@ docker_check_kde_health() {
         docker_run_cmd rm -rf /var/lib/bottle/sync/*
         docker_run_cmd bottle -Syu --needed --noconfirm --disable-download-timeout qt5 qt6
 
-        drunk_message "Creating new image for drunk_kde"
-        sudo docker commit $DOCKER_CONTAINER_NAME drunk_kde
+        message "Creating new image for kde build env called ( ${DOCKER_CONTAINER_KDE_NAME} )"
+        sudo docker commit $DOCKER_CONTAINER_NAME $DOCKER_CONTAINER_KDE_NAME
 
         docker_reset
     fi
@@ -60,10 +60,10 @@ docker_initial_sysedit() {
     docker_run_cmd useradd developer -m -g wheel
 
     # Copy over local bottle.conf
-    docker_run_cmd cp -f /home/developer/DRUNK/tools/docker/bottle.conf /etc/bottle.conf
+    docker_run_cmd cp -f /home/developer/$TOOL_MAIN_NAME/tools/docker/bottle.conf /etc/bottle.conf
 
     # Perms fixes + bottle changes
-    docker_run_cmd bash -c /home/developer/DRUNK/tools/docker/developer.sh
+    docker_run_cmd bash -c /home/developer/$TOOL_MAIN_NAME/tools/docker/developer.sh
 
     set -e
 
@@ -73,10 +73,10 @@ docker_initial_sysedit() {
     # Make sure that container has sudo installed with
     docker_run_cmd bottle --needed --noconfirm --disable-download-timeout -Sy sudo nano mpfr mpc base-devel m4 git grep gawk file
 
-    docker_run_cmd bash -c /home/developer/DRUNK/tools/docker/fix_sudo.sh
+    docker_run_cmd bash -c /home/developer/$TOOL_MAIN_NAME/tools/docker/fix_sudo.sh
 
     # Apply git global changes ( just in case repo tool is used somewhere )
-    docker_run_cmd git config --global user.email "developer@drunk.com"
+    docker_run_cmd git config --global user.email "developer@evolix.com"
     docker_run_cmd git config --global user.name "Docker developer"
     docker_run_cmd git config --global color.ui false
 }
@@ -84,17 +84,17 @@ docker_initial_sysedit() {
 docker_setup_container() {
     sudo docker container create \
     --name $DOCKER_CONTAINER_NAME \
-    --volume $P_ROOT:$DOCKER_USER_FOLDER/DRUNK \
+    --volume $P_ROOT:$DOCKER_USER_FOLDER/$TOOL_MAIN_NAME \
     --tty \
-    hilledkinged/drunk /bin/bash
+    ${DOCKER_IMAGE_NAME} /bin/bash
 }
 
 docker_setup_container_kde() {
     sudo docker container create \
     --name $DOCKER_CONTAINER_KDE_NAME \
-    --volume $P_ROOT:$DOCKER_USER_FOLDER/DRUNK \
+    --volume $P_ROOT:$DOCKER_USER_FOLDER/$TOOL_MAIN_NAME \
     --tty \
-    drunk_kde /bin/bash
+    $DOCKER_CONTAINER_KDE_NAME /bin/bash
 }
 
 docker_container_start() {
@@ -118,15 +118,15 @@ docker_reset() {
 
     if [ "${DOCKER_CONTAINER_KDE}" = true ]; then
         docker_reset_kde
+        message "Docker reset is done for: ${DOCKER_CONTAINER_KDE_NAME}"
     else
         docker_reset_dev
+        message "Docker reset is done for: ${DOCKER_CONTAINER_NAME}"
     fi
-
-    drunk_message "Docker reset is done for: ${DOCKER_CONTAINER_KDE}"
 }
 
 docker_reset_dev() {
-    drunk_message "Stopping old container ( drunk_dev )"
+    message "Stopping old container ( $DOCKER_CONTAINER_NAME )"
 
     sudo docker container stop $DOCKER_CONTAINER_NAME
     sleep 1
@@ -148,7 +148,7 @@ docker_reset_dev() {
 
 # Only applies for drunk_kde
 docker_reset_kde() {
-    drunk_message "Stopping old container ( drunk_kde )"
+    message "Stopping old container ( $DOCKER_CONTAINER_KDE_NAME )"
 
     sudo docker container stop $DOCKER_CONTAINER_KDE_NAME
     sleep 1
@@ -172,13 +172,13 @@ docker_reset_kde() {
 }
 
 docker_set_kde_status() {
-    drunk_debug "Getting proper container name for our usage"
+    msg_debug "Getting proper container name for our usage"
 
-    if [ ! -f $DRUNK_TEMP/docker001 ]; then
-        touch $DRUNK_TEMP/docker001
+    if [ ! -f $TOOL_TEMP/docker001 ]; then
+        touch $TOOL_TEMP/docker001
     fi
 
-    if [ "$(cat $DRUNK_TEMP/docker001)" == "kde_drunk_dev" ]; then
+    if [ "$(cat $TOOL_TEMP/docker001)" == "$DOCKER_CONTAINER_KDE_NAME" ]; then
         echo 'true' > $P_ROOT/tools/checks/docker_kde
         export DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_KDE_NAME}
     else
@@ -188,30 +188,30 @@ docker_set_kde_status() {
     # Re-export the default container name ( basically overwrite default one to kde's )
     export DOCKER_CONTAINER_KDE=$(cat $P_ROOT/tools/checks/docker_kde)
 
-    drunk_debug "KDE Switch is now: ${DOCKER_CONTAINER_KDE} + ${DOCKER_CONTAINER_NAME}"
+    msg_debug "KDE Switch is now: ${DOCKER_CONTAINER_KDE} + ${DOCKER_CONTAINER_NAME}"
 }
 
 # Start the container
 docker_start() {
-    drunk_debug "DOCKER: Executed bash shell"
+    msg_debug "DOCKER: Executed bash shell"
     sudo docker exec --interactive --tty $DOCKER_CONTAINER_NAME bash
 }
 
 # ROOT run cmd
 docker_run_cmd() {
-    drunk_debug "DOCKER: $@"
+    msg_debug "DOCKER: $@"
     sudo docker exec --tty $DOCKER_CONTAINER_NAME $@
 }
 
 # developer user bash shell
 docker_user_start() {
-    drunk_debug "DOCKER: Executed bash shell"
+    msg_debug "DOCKER: Executed bash shell"
     sudo docker exec --interactive --tty $DOCKER_CONTAINER_NAME su developer -c bash
 }
 
 # developer run cmd
 docker_user_run_cmd() {
-    drunk_debug "DOCKER: $@"
+    msg_debug "DOCKER: $@"
     sudo docker exec --tty $DOCKER_CONTAINER_NAME su developer -c "$@"
 }
 

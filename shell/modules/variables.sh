@@ -2,14 +2,14 @@
 # Here we will export all variables
 ##
 
-export DRUNK_BUILD=false
-export DRUNK_CLEAN=false
-export DRUNK_DOCKER=false
-export DRUNK_TEMP=$P_ROOT/tools/tmp
-export DRUNK_SKIPBUMP=true
-export ISO_ROOT=$P_ROOT/drunk_iso
-export DRUNK_USER=$(whoami)
-
+export TOOL_BUILD=false
+export TOOL_CLEAN=false
+export TOOL_DOCKER=false
+export TOOL_TEMP=$P_ROOT/tools/tmp
+export TOOL_SKIPBUMP=true
+export ISO_ROOT=$P_ROOT/system_iso
+export TOOL_USER=$(whoami)
+export TOOL_MAIN_NAME=EVOLIX
 ##
 # Failsafe incase of error
 ##
@@ -27,10 +27,22 @@ export srel=" "
 export INTENDED=idk
 
 ##
+# Distro specific exports
+##
+
+# Package manager side changes are WIP still so bottle will be used anyways
+export PACKAGE_MANAGER=bottle
+
+# This is used in mkiso mainly vmlinuz-DISTRONAME
+export DISTRO_NAME=evolix
+
+##
 # Docker related ( Defaults )
 ##
-export DOCKER_CONTAINER_NAME=drunk_dev
-export DOCKER_CONTAINER_KDE_NAME=kde_dev
+export DOCKER_IMAGE_NAME="hilledkinged/evolix"
+
+export DOCKER_CONTAINER_NAME=evolix_dev
+export DOCKER_CONTAINER_KDE_NAME=evolix_kde_dev
 export DOCKER_CONTAINER_KDE=false
 export DOCKER_USER_FOLDER=/home/developer
 

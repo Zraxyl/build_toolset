@@ -1,13 +1,13 @@
 create_tmp() {
     # Create tmp folder
-    mkdir -p $DRUNK_TEMP
+    mkdir -p $TOOL_TEMP
 }
 
 clean_tmp() {
     # Clean tmp
-    if [ -f $DRUNK_TEMP/.keep_tmp ]; then
-        drunk_debug "Skipping tmp cleaning"
+    if [ -f $TOOL_TEMP/.keep_tmp ]; then
+        msg_debug "Skipping tmp cleaning"
     else
-        rm -rf $DRUNK_TEMP
+        rm -rf $TOOL_TEMP
     fi
 }

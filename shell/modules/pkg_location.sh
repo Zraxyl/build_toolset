@@ -7,7 +7,7 @@ find_pkg_location() {
     # Look up the package directory
     PKG_ROOT_DIR=$P_ROOT/pkgbuild/$P_ARCH
 
-    drunk_message $PKG_ROOT_DIR
+    message $PKG_ROOT_DIR
 
     ##
     # TODO: Make sure to find correct folder as some packages have similar names ( and this can make find select wrong dir )
@@ -58,10 +58,10 @@ find_pkg_location() {
         export PKG_PATH=$PKG_ROOT_DIR/server/$PKG_NAME
         export WHAT_AM_I=server
     else
-        drunk_err "$PKG_NAME was not found ( check for typos or if its new category then remember to add entry for it in builder modules )"
-        drunk_err "Issue may also occure if you forgot to mention arch ( see --help )"
+        msg_error "$PKG_NAME was not found ( check for typos or if its new category then remember to add entry for it in builder modules )"
+        msg_error "Issue may also occure if you forgot to mention arch ( see --help )"
 	clean_tmp
     fi
 
-    drunk_debug "Pkg is located at $PKG_PATH"
+    msg_debug "Pkg is located at $PKG_PATH"
 }

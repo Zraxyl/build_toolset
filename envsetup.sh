@@ -7,7 +7,7 @@ set -e -o pipefail -u
 ##
 
 # Dont allow to run this script in other places than specified symlink dir ( So no unknown issues occure )
-if [ -f tools/drunk.sh ];then
+if [ -f tools/envsetup.sh ];then
     cd "$(dirname "$0")"
 else
     echo "Dont run this in other places than its symlink root dir ( Only in a project root dir that has folder called setup )!!!"
@@ -28,9 +28,9 @@ source $P_ROOT/tools/shell/modules/msg_types.sh
 
 # Check for root user before making tmp dir's
 if [[ $EUID -ne 0 ]]; then
-        drunk_debug "User isn't root, thats good"
+        msg_debug "User isn't root, thats good"
     else
-        drunk_err "User is root and this isn't allowed"
+        msg_error "User is root and this isn't allowed"
 fi
 
 # Load tmp handler and start it
@@ -76,7 +76,7 @@ source $P_ROOT/tools/shell/modules/pkg_build.sh
 # Feed it again to clean leftovers on pkg's
 source $P_ROOT/tools/shell/modules/pkg_clean.sh
 
-# Feed docker instructions for drunk/setup
+# Feed docker instructions for setup
 source $P_ROOT/tools/shell/modules/docker_main.sh
 
 # Feed the scriptlet main arch
@@ -120,30 +120,30 @@ while (($# >= 1)); do
         --) shift 1; break;;
         -h|--help) show_help;;
         --aarch64) set_aarch64 && intended;; # TODO finish arch manager and needed edits for docker...
-        -b|--build) DRUNK_BUILD=true;;
-        -f|--force-build) echo '--force ' > $DRUNK_TEMP/tmpvar001;;
-        --no-extract) echo '--noextract ' > $DRUNK_TEMP/tmpvar002;;
-        --kde) echo 'kde_drunk_dev' > $DRUNK_TEMP/docker001;;
-        --pkgrel-bump) echo 'DRUNK_SKIPBUMP=false' > $DRUNK_TEMP/envvar001;;
+        -b|--build) TOOL_BUILD=true;;
+        -f|--force-build) echo '--force ' > $TOOL_TEMP/tmpvar001;;
+        --no-extract) echo '--noextract ' > $TOOL_TEMP/tmpvar002;;
+        --kde) echo "${DOCKER_CONTAINER_KDE_NAME}" > $TOOL_TEMP/docker001;;
+        --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001;;
         --mkiso) export intended && menu_selection;;
         --mkiso-clean-cli) intended && make_clean_iso;;
         --mkiso-plasma-clean-cli) intended && make_plasma_clean_iso;; # Create LiveOS env with plasma desktop
         --mkiso-xfce-clean-cli) intended && make_xfce_clean_iso;; # Create LiveOS env with xfce desktop
-        --leave-tmp) echo 'true' > $DRUNK_TEMP/.keep_tmp;; # This will be used by docker builder only ( keep away from help menu )
-        -c|--clean) DRUNK_CLEAN=true;;
+        --leave-tmp) echo 'true' > $TOOL_TEMP/.keep_tmp;; # This will be used by docker builder only ( keep away from help menu )
+        -c|--clean) TOOL_CLEAN=true;;
         -d|--docker)
         if [ $# -eq 1 ]; then
-                drunk_err "Docker option cant be used alone ( need to be first arg! )"
+                msg_error "Docker option cant be used alone ( need to be first arg! )"
         fi
         if [ -z "$1" ]; then
-            drunk_warn "Make sure to add/use docker experience before adding build/clean option"
-            drunk_err "nevertheless this option is in wrong place, now panicking"
+            msg_warning "Make sure to add/use docker experience before adding build/clean option"
+            msg_error "nevertheless this option is in wrong place, now panicking"
         else
-            export DRUNK_DOCKER=true
-            echo true > $DRUNK_TEMP/is_docker
+            export TOOL_DOCKER=true
+            echo true > $TOOL_TEMP/is_docker
         fi ;;
         --docker-shell) docker_user_start ;;
-        -dr|--docker-reset) docker_reset && drunk_message "Docker reset done, exiting" && exit ;;
+        -dr|--docker-reset) docker_reset && message "Docker reset done, exiting" && exit ;;
         *) export PKG_LIST+=("${1}");;
         -*) unknown_option ${1};;
         --*) unknown_option ${1};;
@@ -151,11 +151,11 @@ while (($# >= 1)); do
     shift 1
 done
 
-case "$DRUNK_BUILD" in
+case "$TOOL_BUILD" in
     "true")
-        case "$DRUNK_DOCKER" in
+        case "$TOOL_DOCKER" in
             "true")
-                case "$DRUNK_CLEAN" in
+                case "$TOOL_CLEAN" in
                     "true")
                         build_pkg_docker
                         clean_pkg_docker
@@ -166,7 +166,7 @@ case "$DRUNK_BUILD" in
                 esac
             ;;
             "false")
-                case "$DRUNK_CLEAN" in
+                case "$TOOL_CLEAN" in
                     "true")
                         build_pkg
                         clean_pkg
@@ -180,9 +180,9 @@ case "$DRUNK_BUILD" in
         esac
     ;;
     "false")
-        case "$DRUNK_CLEAN" in
+        case "$TOOL_CLEAN" in
             "true")
-                case "$DRUNK_DOCKER" in
+                case "$TOOL_DOCKER" in
                     "true")
                         clean_pkg_docker
                     ;;
@@ -199,7 +199,7 @@ case "$DRUNK_BUILD" in
                         echo " "
                     ;;
                     "false")
-                        drunk_err 'No proper commands have been feed ( please see -h / --help )'
+                        msg_error 'No proper commands have been feed ( please see -h / --help )'
                     ;;
                 esac
             ;;

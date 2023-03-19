@@ -1,6 +1,6 @@
 get_arch() {
 	ARCH=$(uname -m)
-	drunk_debug "[ System arch is ]: ${ARCH}"
+	msg_debug "[ System arch is ]: ${ARCH}"
 }
 
 arch_check_and_warn() {
@@ -11,7 +11,7 @@ arch_check_and_warn() {
 	if [ "$wants" = "$has" ]; then
 		true
 	else
-		drunk_warn "Youre machine isn't based on target arch, make sure to use qemu and targeted DrunkOS rootfs for builds!!!"
+		msg_warning "Youre machine isn't based on target arch, make sure to use qemu and targeted rootfs for builds!!!"
 	fi
 }
 
@@ -21,9 +21,9 @@ set_aarch64() {
 
 	# Now do the trick
 	if [ -f "$P_ROOT/tools/tmp/is_arch" ]; then
-		drunk_debug "Already set to AArch64"
+		msg_debug "Already set to AArch64"
 	else
-		drunk_debug "Arch set to AArch64"
+		msg_debug "Arch set to AArch64"
 		echo 'aarch64' > $P_ROOT/tools/tmp/is_arch
 	fi
 }
@@ -31,9 +31,9 @@ set_aarch64() {
 set_x86_64() {
 	# Now do the trick
 	if [ -f "$P_ROOT/tools/tmp/is_arch" ]; then
-		drunk_debug "Already set to X86_64"
+		msg_debug "Already set to X86_64"
 	else
-		drunk_debug "Arch set to X86_64"
+		msg_debug "Arch set to X86_64"
 		echo 'x86_64' > $P_ROOT/tools/tmp/is_arch
 	fi
 }
@@ -47,7 +47,7 @@ set_arch() {
 	elif [ "aarch64" = $has ]; then
 		set_aarch64
 	else
-		drunk_err "You're arch is unsupported - ${has}"
+		msg_error "You're arch is unsupported - ${has}"
 	fi
 }
 
@@ -63,10 +63,10 @@ set_arch_dir() {
 	export ARCH=$(cat $P_ROOT/tools/tmp/is_arch)
 
 	if [ $ARCH == x86_64 ]; then
-		drunk_message "Using X86_64 PKGBUILD files"
+		message "Using X86_64 PKGBUILD files"
 	elif [ $ARCH == aarch64 ]; then
-		drunk_message "Using AArch64 PKGBUILD files"
+		message "Using AArch64 PKGBUILD files"
 	else
-		drunk_err "Didnt find any supported arch"
+		msg_error "Didnt find any supported arch"
 	fi
 }

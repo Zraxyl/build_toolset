@@ -1,6 +1,6 @@
 interrupt_handle() {
     clean_tmp
-    drunk_warn POSSIBLE CRASH/ERROR CAUSED BY CTRL+C / INTERRUPT
+    msg_warning POSSIBLE CRASH/ERROR CAUSED BY CTRL+C / INTERRUPT
     sleep 1
 
     exit
@@ -8,28 +8,28 @@ interrupt_handle() {
 
 exit_handle() {
     clean_tmp
-    drunk_debug $?
-    drunk_warn SCRIPT EXITED
+    msg_debug $?
+    msg_warning SCRIPT EXITED
 
     exit
 }
 
 # Untils logging issue is fixed
 tmp_err_handle() {
-    drunk_warn Script had a error so we need to exit by cleaning tmp files
+    msg_warning Script had a error so we need to exit by cleaning tmp files
     clean_tmp
-    drunk_err Bye
+    msg_error Bye
 }
 
 err_handle() {
     # Post error message with cathered log
-    fault_log=$( tail "$DRUNK_TEMP/drunk_err.log" )
+    fault_log=$( tail "$TOOL_TEMP/msg_error.log" )
 
-    drunk_spacer
-    drunk_fault $fault_log
-    drunk_spacer
+    msg_spacer
+    msg_fault $fault_log
+    msg_spacer
 
-    cp $DRUNK_TEMP/drunk_err.log $P_ROOT/build_error.log
+    cp $TOOL_TEMP/msg_error.log $P_ROOT/build_error.log
     clean_tmp
     sleep 2
 
@@ -40,8 +40,8 @@ start_logging() {
     # Setup logging
     local err_code="${1:-$?}"
 
-    touch $DRUNK_TEMP/drunk_err.log
-    declare err_log=$DRUNK_TEMP/drunk_err.log
+    touch $TOOL_TEMP/msg_error.log
+    declare err_log=$TOOL_TEMP/msg_error.log
 
     # Log error messages
     #exec 2> $err_log

@@ -1,19 +1,19 @@
 #
 # Lets not use temp here as dev may want to see/edit some specific areas of rootfs
-# So lets make new folder called drunk_iso where we do all the things
+# So lets make new folder called system_iso where we do all the things
 #
 
 if [ "${ARCH}" = "aarch64" ]; then
 	clean_tmp
-	drunk_err "AArch64 isn't supported yet!!!"
+	msg_error "AArch64 isn't supported yet!!!"
 else
-	drunk_debug Arch is OK
+	msg_debug Arch is OK
 fi
 
 # This will be a list of functions to run in menu
 menu_selection() {
     # Lets remove compile lock as its not useful here
-    rm -f $P_ROOT/tools/tmp/.drunk_locked
+    rm -f $P_ROOT/tools/tmp/.builder_locked
 
     prepare_env
 
@@ -21,7 +21,7 @@ menu_selection() {
     WIDTH=80
     CHOICE_HEIGHT=30
 
-    BACKTITLE="Easy drunk-iso crator tool"
+    BACKTITLE="Easy $DISTRO_NAME-iso crator tool"
     TITLE="ISO CREATOR"
     MENU="Select the option you need"
 
@@ -63,7 +63,7 @@ exec_rootfs() {
 
 # Clean and force remove everything
 full_clean() {
-    drunk_message Cleaning up before starting new build
+    message Cleaning up before starting new build
 
     # Check atleast 3 times before returning to deleting things
     rootfs_umount
@@ -75,19 +75,19 @@ full_clean() {
 
 rootfs_umount() {
     if [ -f $ISO_ROOT/rootfs/system/sys/ ]; then
-        drunk_message Unmounting $ISO_ROOT/rootfs/system/sys/
+        message Unmounting $ISO_ROOT/rootfs/system/sys/
         as_root umount -f -l $ISO_ROOT/rootfs/system/sys
         sleep 4
     fi
 
     if [ -f $ISO_ROOT/rootfs/system/proc/ ]; then
-        drunk_message Unmounting $ISO_ROOT/rootfs/system/proc/
+        message Unmounting $ISO_ROOT/rootfs/system/proc/
         as_root umount -f -l $ISO_ROOT/rootfs/system/proc
         sleep 4
     fi
 
     if [ -f $ISO_ROOT/rootfs/system/dev/ ]; then
-        drunk_message Unmounting $ISO_ROOT/rootfs/system/dev/
+        message Unmounting $ISO_ROOT/rootfs/system/dev/
         as_root umount -f -l $ISO_ROOT/rootfs/system/dev
         sleep 4
     fi
@@ -95,7 +95,7 @@ rootfs_umount() {
 
 # Start from scratch and delete old files
 make_dirty_iso () {
-    drunk_message Making dirty iso build
+    message Making dirty iso build
 
     # Prepare proper env
     prepare_env
@@ -135,7 +135,7 @@ make_dirty_iso () {
 
 # Start from scratch and delete old files
 make_clean_iso () {
-    drunk_message Making clean iso build
+    message Making clean iso build
 
     # Clean everything
     full_clean
@@ -147,8 +147,8 @@ make_clean_iso () {
     set +e
     make_rootfs
 
-    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk ]; then
-        drunk_message Making rootfs crashed so trying again
+    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME ]; then
+        message Making rootfs crashed so trying again
         # Multiple checks as umount dosent wanna play with us that well for some cases
         rootfs_umount
         rootfs_umount
@@ -180,7 +180,7 @@ make_clean_iso () {
 
 # Start from scratch and delete old files
 make_plasma_clean_iso () {
-    drunk_message Making clean iso build with plasma-desktop env
+    message Making clean iso build with plasma-desktop env
 
     # Clean everything
     full_clean
@@ -192,8 +192,8 @@ make_plasma_clean_iso () {
     set +e
     rootfs_plasma
 
-    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk ]; then
-        drunk_message Making rootfs crashed so trying again
+    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME ]; then
+        message Making rootfs crashed so trying again
         # Multiple checks as umount dosent wanna play with us that well for some cases
         rootfs_umount
         rootfs_umount
@@ -220,7 +220,7 @@ make_plasma_clean_iso () {
     exec_rootfs systemctl enable sddm-plymouth
 
     # Clean/Remove old pkg files that bottle has ( reduce iso overall size )
-    drunk_message Cleaning up old pkg files
+    message Cleaning up old pkg files
     exec_rootfs bottle -Scc --noconfirm
     # + older synced db / cache
     exec_rootfs rm -rf /var/lib/bottle/sync/*
@@ -233,7 +233,7 @@ make_plasma_clean_iso () {
 }
 
 make_xfce_clean_iso () {
-    drunk_message Making clean iso build with xfce-desktop env
+    message Making clean iso build with xfce-desktop env
 
     # Clean everything
     full_clean
@@ -245,8 +245,8 @@ make_xfce_clean_iso () {
     set +e
     rootfs_xfce
 
-    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk ]; then
-        drunk_message Making rootfs crashed so trying again
+    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME ]; then
+        message Making rootfs crashed so trying again
         # Multiple checks as umount dosent wanna play with us that well for some cases
         rootfs_umount
         rootfs_umount
@@ -273,7 +273,7 @@ make_xfce_clean_iso () {
     exec_rootfs systemctl enable lightdm
 
     # Clean/Remove old pkg files that bottle has ( reduce iso overall size )
-    drunk_message Cleaning up old pkg files
+    message Cleaning up old pkg files
     exec_rootfs bottle -Scc --noconfirm
     # + older synced db / cache
     exec_rootfs rm -rf /var/lib/bottle/sync/*
@@ -296,26 +296,26 @@ make_efi() {
 
     pwd
 
-    DRUNK_LOOP=$(as_root losetup -f)
-    drunk_debug Found and using this loop $DRUNK_LOOP
+    $TOOL_LOOP=$(as_root losetup -f)
+    msg_debug Found and using this loop $TOOL_LOOP
 
     # Create blank image
-    drunk_debug Creating new and blank efi image
+    msg_debug Creating new and blank efi image
     as_root dd if=/dev/zero of=efi.img bs=1 count=0 seek=64M
 
     # Add out image to /dev/loop
-    as_root losetup -P $DRUNK_LOOP efi.img
+    as_root losetup -P $TOOL_LOOP efi.img
 
     # Make sure to format the image before mounting it ( wont mount if no partitions )
-    as_root mkfs.vfat $DRUNK_LOOP
+    as_root mkfs.vfat $TOOL_LOOP
 
     # Mount image to its mnt
-    as_root mount ${DRUNK_LOOP} mnt/
+    as_root mount ${$TOOL_LOOP} mnt/
 
     sleep 2
 
     # Copy over vmlinuz from rootfs
-    as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk mnt/
+    as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME mnt/
 
     # Install EFI binaries
     as_root mkdir -pv mnt/EFI/{BOOT,systemd}
@@ -329,19 +329,19 @@ make_efi() {
 
     # make initrd for efi image
     kver=$(as_root basename $ISO_ROOT/rootfs/system/lib/modules/6.*)
-    as_root dracut --kver $kver -m "base lvm kernel-modules" -a "dmsquash-live" --add-drivers squashfs --filesystems "squashfs ext4 ext3" mnt/drunk-init.img --force
+    as_root dracut --kver $kver -m "base lvm kernel-modules" -a "dmsquash-live" --add-drivers squashfs --filesystems "squashfs ext4 ext3" mnt/initrd.img --force
 
     sleep 2 && sync
 
-    as_root losetup -d $DRUNK_LOOP
+    as_root losetup -d $TOOL_LOOP
 
-    as_root chown -R $DRUNK_USER efi.img
+    as_root chown -R $TOOL_USER efi.img
 
     # Now copy over our efi image amd initrd image for legacy users
     as_root mkdir -p $ISO_ROOT/iso/kernel/
     as_root cp -fv efi.img $ISO_ROOT/iso/kernel/efi.img
 
-    as_root cp -rv mnt/drunk-init.img $ISO_ROOT/iso/kernel/drunk-init.img
+    as_root cp -rv mnt/initrd.img $ISO_ROOT/iso/kernel/initrd.img
 
     # Again triple umount as umount likes to give a finger
     as_root umount -f -l mnt/
@@ -350,7 +350,7 @@ make_efi() {
 
 # Basic iso env with syslinux in place
 make_base_iso() {
-    drunk_message Making iso base filesystem
+    message Making iso base filesystem
     cd $ISO_ROOT/iso
 
     mkdir -pv syslinux
@@ -362,17 +362,17 @@ make_base_iso() {
     # make other dir's
     mkdir -pv LiveOS kernel
 
-    as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk $ISO_ROOT/iso/kernel/
+    as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME $ISO_ROOT/iso/kernel/vmlinuz
 }
 
 # Generate rootfs for squashfs
 make_rootfs() {
-    drunk_message Making rootfs environment
+    message Making rootfs environment
     cd $ISO_ROOT/rootfs
 
     as_root mkdir -pv system
 
-    as_root bottle-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd
+    as_root base-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd
 }
 
 # Here we add things to the rootfs such as passwd and etc
@@ -380,28 +380,28 @@ make_rootfs() {
 # Basically allow errors here
 rootfs_defaults() {
     set +e
-    drunk_message Adding changes to rootfs
-    drunk_warn Errors are allowed in rootfs changes
+    message Adding changes to rootfs
+    msg_warning Errors are allowed in rootfs changes
 
     # Lets make encrypted string of password for root and drunk user
     # https://askubuntu.com/a/80447
-    DRUNK_ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
-    DRUNK_DRUNK_PASSWORD=$(echo drunk | openssl passwd -1 -stdin)
+    $TOOL_MAIN_NAME_ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
+    $TOOL_MAIN_NAME_$TOOL_MAIN_NAME_PASSWORD=$(echo drunk | openssl passwd -1 -stdin)
 
-    drunk_message Creating drunk user
+    message Creating drunk user
     # Lets add drunk user ( with home dir + add to wheel + adm groups )
     exec_rootfs useradd -m -G wheel,adm drunk
 
-    drunk_message Setting root and drunk user password
+    message Setting root and drunk user password
     # Lets set password for root and drunk
-    exec_rootfs usermod --password $DRUNK_ROOT_PASSWORD root
-    exec_rootfs usermod --password $DRUNK_DRUNK_PASSWORD drunk
+    exec_rootfs usermod --password $$TOOL_MAIN_NAME_ROOT_PASSWORD root
+    exec_rootfs usermod --password $$TOOL_MAIN_NAME_$TOOL_MAIN_NAME_PASSWORD drunk
 
-    drunk_message Copying over bashrc for root user
+    message Copying over bashrc for root user
     # Now copy over bashrc for root user
     exec_rootfs cp -f /etc/bash.bashrc /root/.bashrc
 
-    drunk_message Enabling systemd default services
+    message Enabling systemd default services
     exec_rootfs systemctl enable dhcpcd
 
     exec_rootfs systemctl enable getty@tty2
@@ -414,27 +414,27 @@ rootfs_defaults() {
 }
 
 rootfs_plasma() {
-    drunk_message Making rootfs environment with plasma-desktop
+    message Making rootfs environment with plasma-desktop
     cd $ISO_ROOT/rootfs
 
     as_root mkdir -pv system
 
-    as_root bottle-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-plasma-clean plymouth
+    as_root base-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-plasma-clean plymouth
 }
 
 rootfs_xfce() {
-    drunk_message Making rootfs environment with xfce-desktop
+    message Making rootfs environment with xfce-desktop
     cd $ISO_ROOT/rootfs
 
     as_root mkdir -pv system
 
-    as_root bottle-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-xfce-clean lightdm
+    as_root base-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-xfce-clean lightdm
 }
 
 # Generate squashfs for LiveOS
 make_squashfs() {
     # Even for dirty we will remake the squashfs as of possible intended changes
-    drunk_message Making final LiveOS squashfs from rootfs
+    message Making final LiveOS squashfs from rootfs
     rm -f $ISO_ROOT/iso/LiveOS/squashfs.img
 
     as_root mksquashfs $ISO_ROOT/rootfs/system $ISO_ROOT/iso/LiveOS/squashfs.img -wildcards -e 'dev/*' -e 'proc/*' -e 'sys/*'
@@ -442,7 +442,7 @@ make_squashfs() {
 
 # Make final iso image ( bios + uefi compatible )
 generate_iso() {
-    drunk_message Creating bootable iso image
+    message Creating bootable iso image
 
     as_root rm -f $P_ROOT/drunk.iso
 
@@ -455,5 +455,5 @@ generate_iso() {
     kernel/efi.img -no-emul-boot \
     -o $P_ROOT/drunk.iso $ISO_ROOT/iso/
 
-    drunk_message Iso image is located now at $P_ROOT/drunk.iso
+    message Iso image is located now at $P_ROOT/drunk.iso
 }

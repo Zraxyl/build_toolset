@@ -20,24 +20,24 @@ WHITE='\033[1;37m'
 #   msg functions
 ##
 
-drunk_message() {
+message() {
     echo -e "${GREEN}[ MESSAGE ]: ${LGREEN}$@${WHITE}"
 }
 
-drunk_warn() {
+msg_warning() {
     echo -e "${ORANGE}[ WARNING ]: ${YELLOW}$@${WHITE}"
 }
 
-drunk_err() {
+msg_error() {
     echo -e "${RED}[ ERROR ]: ${LRED}$@${WHITE}"
     exit 1
 }
 
-drunk_fault() {
+msg_fault() {
     echo -e "${RED}[ FAULT ]: ${LRED}$@${WHITE}"
 }
 
-drunk_spacer() {
+msg_spacer() {
     echo " "
     echo -e ${GREEN}------------------${WHITE}
     echo " "
@@ -47,11 +47,11 @@ drunk_spacer() {
 # DEBUG LOGS
 ##
 if [ "$SHOW_DEBUG" = "true" ]; then
-    drunk_debug() {
+    msg_debug() {
         echo -e "${BLUE}[ DEBUG ]: ${LBLUE}$@${WHITE}"
     }
 else
-    drunk_debug() {
+    msg_debug() {
         return
     }
 fi

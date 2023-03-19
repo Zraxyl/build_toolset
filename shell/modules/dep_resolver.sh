@@ -3,14 +3,14 @@
 ##
 
 resolve_dep() {
-    drunk_debug "DEP-Resolver looks for $PKG_NAME pkg"
+    msg_debug "DEP-Resolver looks for $PKG_NAME pkg"
 
     cd $PKG_PATH
 
     source PKGBUILD
 
-    drunk_debug "DEPENDS LIST: ${depends[*]}"
-    drunk_debug "MAKEDEPENDS List: ${makedepends[*]}"
+    msg_debug "DEPENDS LIST: ${depends[*]}"
+    msg_debug "MAKEDEPENDS List: ${makedepends[*]}"
 
     export PKG_VERSION=$pkgver
     export PKG_REL=$pkgrel
@@ -18,13 +18,13 @@ resolve_dep() {
 }
 
 install_dep() {
-    drunk_message "Bottle will install these dependencies ' $FULL_DEP_LIST '"
+    message "Bottle will install these dependencies ' $FULL_DEP_LIST '"
 
     # Lets do a hack here with lock
     # TODO: Somehow check if pkg got installed and if not then exit and clear tmp ( otherwise it just errors and dosent remve lock )
-    rm $DRUNK_TEMP/.drunk_locked
-    drunk_spacer
+    rm $TOOL_TEMP/.builder_locked
+    msg_spacer
     sudo -S bottle -Syu --needed --noconfirm --disable-download-timeout $FULL_DEP_LIST
-    drunk_spacer
-    touch $DRUNK_TEMP/.drunk_locked
+    msg_spacer
+    touch $TOOL_TEMP/.builder_locked
 }
