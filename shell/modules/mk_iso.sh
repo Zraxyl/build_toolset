@@ -372,7 +372,7 @@ make_rootfs() {
 
     as_root mkdir -pv system
 
-    as_root base-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd
+    as_root base-strap -G system/ base-syste nano wireless-tools base-install-scripts sudo parted libmd
 }
 
 # Here we add things to the rootfs such as passwd and etc
@@ -419,7 +419,7 @@ rootfs_plasma() {
 
     as_root mkdir -pv system
 
-    as_root base-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-plasma-clean plymouth
+    as_root base-strap -G system/ base-system nano wireless-tools base-install-scripts sudo parted libmd drunk-desktop-plasma-clean plymouth
 }
 
 rootfs_xfce() {
