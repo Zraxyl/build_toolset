@@ -372,7 +372,7 @@ make_rootfs() {
 
     as_root mkdir -pv system
 
-    as_root base-strap -G system/ base-syste nano wireless-tools base-install-scripts sudo parted libmd
+    as_root base-strap -G system/ base-system nano wireless-tools base-install-scripts sudo parted libmd
 }
 
 # Here we add things to the rootfs such as passwd and etc
