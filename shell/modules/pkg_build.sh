@@ -100,13 +100,17 @@ build_pkg() {
         msg_spacer
 
         if [ "$TOOL_SKIPBUMP" = false ];then
-            cp -f $PKG_NAME-$PKG_VERSION-$srel-$P_ARCH.pkg.tar.gz $P_ROOT/pkgbuild/pkgs/$WHAT_AM_I/
+            mkdir -p $TOOL_OUT/pkgs/$P_ARCH/$WHAT_AM_I/
+
+            cp -f $PKG_NAME-$PKG_VERSION-$srel-$P_ARCH.pkg.tar.gz $TOOL_OUT/pkgs/$P_ARCH/$WHAT_AM_I/
             # Tell dev where the pkg is located
-            message "Build successfully done, and pkg file is located at pkgbuild/pkgs/$WHAT_AM_I/$PKG_NAME-$PKG_VERSION-$srel-$P_ARCH.pkg.tar.gz"
+            message "Build successfully done, and pkg file is located at out/pkgs/$P_ARCH/$WHAT_AM_I/$PKG_NAME-$PKG_VERSION-$srel-$P_ARCH.pkg.tar.gz"
         else
-            cp -f $PKG_NAME-$PKG_VERSION-$pkgrel-$P_ARCH.pkg.tar.gz $P_ROOT/pkgbuild/pkgs/$WHAT_AM_I/
+            mkdir -p $TOOL_OUT/pkgs/$P_ARCH/$WHAT_AM_I/
+
+            cp -f $PKG_NAME-$PKG_VERSION-$pkgrel-$P_ARCH.pkg.tar.gz $TOOL_OUT/pkgs/$P_ARCH/$WHAT_AM_I/
             # Tell dev where the pkg is located
-            message "Build successfully done, and pkg file is located at pkgbuild/pkgs/$WHAT_AM_I/$PKG_NAME-$PKG_VERSION-$pkgrel-$P_ARCH.pkg.tar.gz"
+            message "Build successfully done, and pkg file is located at out/pkgs/$P_ARCH/$WHAT_AM_I/$PKG_NAME-$PKG_VERSION-$pkgrel-$P_ARCH.pkg.tar.gz"
         fi
     done
 }

@@ -6,7 +6,7 @@ docker_initial_setup() {
     # Start dockerd from systemctl
     sudo systemctl restart docker
 
-    if [ -f $P_ROOT/tools/checks/docker_ready ]; then
+    if [ -f $TOOL_CHECKS/docker_ready ]; then
         msg_debug "Docker image is already downloaded, starting the container now"
         message "Starting docker container ( sudo may be needed )"
         docker_container_start
@@ -30,7 +30,7 @@ docker_initial_setup() {
         docker_initial_sysedit
 
         # Tell the script that docker image is pulled
-        touch $P_ROOT/tools/checks/docker_ready
+        touch $TOOL_CHECKS/docker_ready
 
         docker_check_kde_health
     fi
@@ -38,7 +38,7 @@ docker_initial_setup() {
 
 docker_check_kde_health() {
     # Lets make a image from custom container
-    if [ ! -f $P_ROOT/tools/checks/docker_kde_ready ]; then
+    if [ ! -f $TOOL_CHECKS/docker_kde_ready ]; then
         docker_run_cmd rm -rf /var/lib/bottle/sync/*
         docker_run_cmd bottle -Syu --needed --noconfirm --disable-download-timeout qt5 qt6
 
@@ -179,14 +179,14 @@ docker_set_kde_status() {
     fi
 
     if [ "$(cat $TOOL_TEMP/docker001)" == "$DOCKER_CONTAINER_KDE_NAME" ]; then
-        echo 'true' > $P_ROOT/tools/checks/docker_kde
+        echo 'true' > $TOOL_CHECKS/docker_kde
         export DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_KDE_NAME}
     else
-        echo 'false' > $P_ROOT/tools/checks/docker_kde
+        echo 'false' > $TOOL_CHECKS/docker_kde
     fi
 
     # Re-export the default container name ( basically overwrite default one to kde's )
-    export DOCKER_CONTAINER_KDE=$(cat $P_ROOT/tools/checks/docker_kde)
+    export DOCKER_CONTAINER_KDE=$(cat $TOOL_CHECKS/docker_kde)
 
     msg_debug "KDE Switch is now: ${DOCKER_CONTAINER_KDE} + ${DOCKER_CONTAINER_NAME}"
 }

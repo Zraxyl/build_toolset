@@ -5,7 +5,7 @@
 
 find_pkg_location() {
     # Look up the package directory
-    PKG_ROOT_DIR=$P_ROOT/pkgbuild/$P_ARCH
+    PKG_ROOT_DIR=$P_ROOT/internal/pkgbuild/$P_ARCH
 
     message $PKG_ROOT_DIR
 

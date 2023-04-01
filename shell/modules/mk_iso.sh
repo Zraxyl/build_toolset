@@ -101,11 +101,11 @@ make_dirty_iso () {
     prepare_env
 
     # Check if we need to re-make the rootfs
-    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk ]; then
+    if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME ]; then
         set +e
         make_rootfs
         set -e
-        if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-drunk ]; then
+        if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME ]; then
             # Multiple checks as umount dosent wanna play with us that well for some cases
             rootfs_umount
             rootfs_umount
@@ -383,19 +383,19 @@ rootfs_defaults() {
     message Adding changes to rootfs
     msg_warning Errors are allowed in rootfs changes
 
-    # Lets make encrypted string of password for root and drunk user
+    # Lets make encrypted string of password for root and non-root user
     # https://askubuntu.com/a/80447
-    $TOOL_MAIN_NAME_ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
-    $TOOL_MAIN_NAME_$TOOL_MAIN_NAME_PASSWORD=$(echo drunk | openssl passwd -1 -stdin)
+    $ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
+    $NON_ROOT_PASSWORD=$(echo $DISTRO_NAME | openssl passwd -1 -stdin)
 
-    message Creating drunk user
-    # Lets add drunk user ( with home dir + add to wheel + adm groups )
-    exec_rootfs useradd -m -G wheel,adm drunk
+    message Creating non-root user
+    # Lets add non-root user ( with home dir + add to wheel + adm groups )
+    exec_rootfs useradd -m -G wheel,adm $DISTRO_NAME
 
-    message Setting root and drunk user password
-    # Lets set password for root and drunk
-    exec_rootfs usermod --password $$TOOL_MAIN_NAME_ROOT_PASSWORD root
-    exec_rootfs usermod --password $$TOOL_MAIN_NAME_$TOOL_MAIN_NAME_PASSWORD drunk
+    message Setting root and non-root user password
+    # Lets set password for root and non-root
+    exec_rootfs usermod --password $ROOT_PASSWORD root
+    exec_rootfs usermod --password $NON_ROOT_PASSWORD $DISTRO_NAME
 
     message Copying over bashrc for root user
     # Now copy over bashrc for root user
@@ -419,7 +419,7 @@ rootfs_plasma() {
 
     as_root mkdir -pv system
 
-    as_root base-strap -G system/ base-system nano wireless-tools base-install-scripts sudo parted libmd drunk-desktop-plasma-clean plymouth
+    as_root base-strap -G system/ base-system nano wireless-tools base-install-scripts sudo parted libmd base-desktop-plasma-clean plymouth
 }
 
 rootfs_xfce() {
@@ -428,7 +428,7 @@ rootfs_xfce() {
 
     as_root mkdir -pv system
 
-    as_root base-strap -G system/ base-drunk nano wireless-tools drunk-install-scripts sudo parted libmd drunk-desktop-xfce-clean lightdm
+    as_root base-strap -G system/ base-system nano wireless-tools base-install-scripts sudo parted libmd base-desktop-xfce-clean lightdm
 }
 
 # Generate squashfs for LiveOS
@@ -444,7 +444,7 @@ make_squashfs() {
 generate_iso() {
     message Creating bootable iso image
 
-    as_root rm -f $P_ROOT/drunk.iso
+    as_root rm -f $P_ROOT/$DISTRO_NAME.iso
 
     as_root xorriso -as mkisofs \
     -r -V "installer" \
@@ -453,7 +453,7 @@ generate_iso() {
     -no-emul-boot -boot-load-size 4 -boot-info-table\
     -eltorito-alt-boot -eltorito-platform efi -eltorito-boot \
     kernel/efi.img -no-emul-boot \
-    -o $P_ROOT/drunk.iso $ISO_ROOT/iso/
+    -o $P_ROOT/$DISTRO_NAME.iso $ISO_ROOT/iso/
 
-    message Iso image is located now at $P_ROOT/drunk.iso
+    message Iso image is located now at $P_ROOT/$DISTRO_NAME.iso
 }

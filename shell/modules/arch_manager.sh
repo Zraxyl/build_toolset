@@ -20,21 +20,21 @@ set_aarch64() {
 	arch_check_and_warn aarch64
 
 	# Now do the trick
-	if [ -f "$P_ROOT/tools/tmp/is_arch" ]; then
+	if [ -f "$TOOL_TEMP/is_arch" ]; then
 		msg_debug "Already set to AArch64"
 	else
 		msg_debug "Arch set to AArch64"
-		echo 'aarch64' > $P_ROOT/tools/tmp/is_arch
+		echo 'aarch64' > $TOOL_TEMP/is_arch
 	fi
 }
 
 set_x86_64() {
 	# Now do the trick
-	if [ -f "$P_ROOT/tools/tmp/is_arch" ]; then
+	if [ -f "$TOOL_TEMP/is_arch" ]; then
 		msg_debug "Already set to X86_64"
 	else
 		msg_debug "Arch set to X86_64"
-		echo 'x86_64' > $P_ROOT/tools/tmp/is_arch
+		echo 'x86_64' > $TOOL_TEMP/is_arch
 	fi
 }
 
@@ -52,7 +52,7 @@ set_arch() {
 }
 
 get_target_arch() {
-	cat "${P_ROOT}/tools/tmp/is_arch"
+	cat "$TOOL_TEMP/is_arch"
 }
 
 # TODO: Finish this here ( Currently using pkg_location hax )
@@ -60,7 +60,7 @@ set_arch_dir() {
 	# Here we will set a pkgbuild dir for setup if user has predefined
 	# its location by giving a new build script argument
 
-	export ARCH=$(cat $P_ROOT/tools/tmp/is_arch)
+	export ARCH=$(cat $TOOL_TEMP/is_arch)
 
 	if [ $ARCH == x86_64 ]; then
 		message "Using X86_64 PKGBUILD files"

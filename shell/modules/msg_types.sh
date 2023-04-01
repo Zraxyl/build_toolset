@@ -52,6 +52,6 @@ if [ "$SHOW_DEBUG" = "true" ]; then
     }
 else
     msg_debug() {
-        return
+        test 0
     }
 fi

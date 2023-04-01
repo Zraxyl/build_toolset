@@ -1,6 +1,14 @@
-dialog_main() {
-    clear
+##
+# Dialog extension for package builder ( Reuses existing shell module )
+##
 
+pkg_dialog_main() {
+    # Option text
+    OPTION1="Build package/packages"
+    OPTION2="Build and clean package/packages"
+    OPTION3="Clean package"
+
+    # Main function
     HEIGHT=30
     WIDTH=80
     CHOICE_HEIGHT=30
@@ -9,33 +17,34 @@ dialog_main() {
     MENU="Choose one of the following options:"
 
     OPTIONS=(
-        1 "Package Builder options"
-        2 "Build nightly ISO"
-    )
+        1 "${OPTION1}"
+        2 "${OPTION2}"
+        3 "${OPTION3}"
+        )
 
     CHOICE=$(dialog --clear \
                 --backtitle "$BACKTITLE" \
                 --title "$TITLE" \
                 --menu "$MENU" \
+                --erase-on-exit \
                 $HEIGHT $WIDTH $CHOICE_HEIGHT \
                 "${OPTIONS[@]}" \
                 2>&1 >/dev/tty)
 
     case $CHOICE in
         1)
-            echo "Package Builder options"
+            echo "${OPTION1}"
             dummy_dialog
         ;;
 
         2)
-            echo "Build nightly ISO"
+            echo "${OPTION2}"
+            dummy_dialog
+        ;;
+
+        3)
+            echo "${OPTION3}"
             dummy_dialog
         ;;
     esac
-}
-
-dummy_dialog() {
-    clean_tmp
-
-    clear
 }

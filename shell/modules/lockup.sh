@@ -1,5 +1,12 @@
 check_and_setup_lock() {
     IS_COMPILING=none
+
+    # Lets allow devs to bypass the lockup if variable is given
+    if [ "${IGNORE_LOCKUP}" = "yes" ]; then
+        rm -f $TOOL_TEMP/.builder_locked
+        rm -f $TOOL_TEMP/builds
+    fi
+
     # Check wheather system has a lock on it or not
     if [ -f $TOOL_TEMP/.builder_locked ]; then
         if [ -f $TOOL_TEMP/builds ]; then
@@ -35,5 +42,9 @@ show_tmp_status() {
 }
 
 lock_drunk() {
-    touch $TOOL_TEMP/.builder_locked
+    if [ "${IGNORE_LOCKUP}" = "yes" ]; then
+        rm -f $TOOL_TEMP/.builder_locked
+    else
+        touch $TOOL_TEMP/.builder_locked
+    fi
 }
