@@ -20,6 +20,13 @@ WHITE='\033[1;37m'
 #   msg functions
 ##
 
+loaded() {
+    echo -e "${BLUE}[ LOADED ]: ${LBLUE}$@${WHITE}"
+
+    # As this function prints module loading then also lets sleep a bit so everything catches up in reality
+    sleep 0.3
+}
+
 message() {
     echo -e "${GREEN}[ MESSAGE ]: ${LGREEN}$@${WHITE}"
 }

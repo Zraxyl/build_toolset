@@ -145,7 +145,7 @@ build_pkg_docker() {
     # clean the tmp that has our flags give by main script here
 
     message "DOCKER: Started compiling package $PKG_NAME"
-    docker_user_run_cmd "cd ~/$TOOL_MAIN_NAME && ./drunk --leave-tmp -b ${PKG_NAME}"
+    docker_user_run_cmd "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
 
     rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
 

@@ -42,8 +42,10 @@ show_tmp_status() {
 }
 
 lock_drunk() {
+    # Lets allow devs to bypass the lockup if variable is given
     if [ "${IGNORE_LOCKUP}" = "yes" ]; then
         rm -f $TOOL_TEMP/.builder_locked
+        rm -f $TOOL_TEMP/builds
     else
         touch $TOOL_TEMP/.builder_locked
     fi

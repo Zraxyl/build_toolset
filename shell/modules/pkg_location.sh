@@ -24,8 +24,41 @@ find_pkg_location() {
     elif [ -d $PKG_ROOT_DIR/gnome/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/gnome/$PKG_NAME
         export WHAT_AM_I=gnome
-    elif [ -d $PKG_ROOT_DIR/kde/$PKG_NAME ]; then
-        export PKG_PATH=$PKG_ROOT_DIR/kde/$PKG_NAME
+    elif [ -d $PKG_ROOT_DIR/kde/frameworks/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/frameworks/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/graphics/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/graphics/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/kdevelop/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/kdevelop/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/libraries/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/libraries/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/multimedia/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/multimedia/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/neon/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/neon/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/network/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/network/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/other/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/other/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/plasma/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/plasma/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/sdk/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/sdk/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/system/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/system/$PKG_NAME
+        export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/kde/utilities/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/kde/utilities/$PKG_NAME
         export WHAT_AM_I=kde
     elif [ -d $PKG_ROOT_DIR/xfce/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/xfce/$PKG_NAME

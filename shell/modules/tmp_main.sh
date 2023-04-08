@@ -8,6 +8,6 @@ clean_tmp() {
     if [ -f $TOOL_TEMP/.keep_tmp ]; then
         msg_debug "Skipping tmp cleaning"
     else
-        rm -rf $TOOL_TEMP
+        sudo rm -rf $TOOL_TEMP
     fi
 }

@@ -15,12 +15,21 @@ docker_initial_setup() {
 
     else
         message "Docker initial setup will ask for passwd"
-        sudo docker pull ${DOCKER_IMAGE_NAME}:latest
-
+        if [ $(sudo docker image ls | grep -o hilledkinged/evolinx) = "hilledkinged/evolinx" ]; then
+            message "Image already pulled, skipping"
+        else
+            message "Pulling evolinx image as none was found"
+            sudo docker pull ${DOCKER_IMAGE_NAME}:latest
+        fi
         sleep 1
 
         # Setup base docker container
-        docker_setup_container
+        if [ $(sudo docker container ls -a | grep -o hilledkinged/evolinx) = "hilledkinged/evolinx" ]; then
+            message "Container already pulled, skipping"
+        else
+            message "Making new container as none was found"
+            docker_setup_container
+        fi
 
         # Start our new container
         docker_container_start
@@ -39,8 +48,8 @@ docker_initial_setup() {
 docker_check_kde_health() {
     # Lets make a image from custom container
     if [ ! -f $TOOL_CHECKS/docker_kde_ready ]; then
-        docker_run_cmd rm -rf /var/lib/bottle/sync/*
-        docker_run_cmd bottle -Syu --needed --noconfirm --disable-download-timeout qt5 qt6
+        docker_run_cmd rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*
+        docker_run_cmd ${PACKAGE_MANAGER} -Syu --needed --noconfirm --disable-download-timeout qt5 qt6
 
         message "Creating new image for kde build env called ( ${DOCKER_CONTAINER_KDE_NAME} )"
         sudo docker commit $DOCKER_CONTAINER_NAME $DOCKER_CONTAINER_KDE_NAME
@@ -51,29 +60,35 @@ docker_check_kde_health() {
 
 # Here are needed changes for our development area/env that arent made by default image builder
 docker_initial_sysedit() {
-    # Reset bottle sync folder
-    docker_run_cmd rm -rf /var/lib/bottle/sync/*
+    # Reset pkg manager sync folder
+    docker_run_cmd rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*
 
     set +e
 
     # Add developer user ( used to build pkg's without root
     docker_run_cmd useradd developer -m -g wheel
 
-    # Copy over local bottle.conf
-    docker_run_cmd cp -f /home/developer/$TOOL_MAIN_NAME/tools/docker/bottle.conf /etc/bottle.conf
+    # Copy over local package manager.conf ( specific for arch)
+    if [ "${ARCH}" = "x86_64"  ]; then
+        # AMD64 config
+        docker_run_cmd cp -fv /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf
+    elif [ "${ARCH}" = "aarch64"  ]; then
+        # ARM64 config
+        docker_run_cmd cp -fv /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/arm64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf
+    fi
 
-    # Perms fixes + bottle changes
-    docker_run_cmd bash -c /home/developer/$TOOL_MAIN_NAME/tools/docker/developer.sh
+    # Perms fixes + ${PACKAGE_MANAGER} changes
+    docker_run_cmd bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/rootsys/developer.sh
 
     set -e
 
     # Also upgrade base system before installing new stuff
-    docker_run_cmd bottle -Syu --needed --noconfirm --disable-download-timeout
+    docker_run_cmd ${PACKAGE_MANAGER} -Syu --needed --noconfirm --disable-download-timeout
 
     # Make sure that container has sudo installed with
-    docker_run_cmd bottle --needed --noconfirm --disable-download-timeout -Sy sudo nano mpfr mpc base-devel m4 git grep gawk file
+    docker_run_cmd ${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Sy linux ${DOCKER_PKG}
 
-    docker_run_cmd bash -c /home/developer/$TOOL_MAIN_NAME/tools/docker/fix_sudo.sh
+    docker_run_cmd bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/sudo/fix_sudo.sh
 
     # Apply git global changes ( just in case repo tool is used somewhere )
     docker_run_cmd git config --global user.email "developer@evolix.com"
@@ -165,7 +180,7 @@ docker_reset_kde() {
     docker_initial_sysedit
 
     # Update / Upgrade qt*
-    docker_run_cmd bottle --needed --noconfirm --disable-download-timeout -Su qt5 qt6
+    docker_run_cmd ${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Su ${DOCKER_KDE_PKG}
 
     # Now clean tmp
     clean_tmp

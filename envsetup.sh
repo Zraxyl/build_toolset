@@ -63,6 +63,8 @@ while (($# >= 1)); do
         fi ;;
         --docker-shell) docker_user_start ;;
         -dr|--docker-reset) docker_reset && message "Docker reset done, exiting" && exit ;;
+        --imgsys-amd64) docker_imgsys_amd64 && exit;;
+        --imgsys-arm64) docker_imgsys_arm64 && exit;;
         *) export PKG_LIST+=("${1}");;
         -*) unknown_option ${1};;
         --*) unknown_option ${1};;

@@ -78,6 +78,13 @@ show_help() {
     message " --mkiso-clean-cli        : Will skip mkiso menu and make clean base ISO"
     message " --mkiso-plasma-clean-cli : Will skip mkiso and make clean plasma-desktop ISO"
     message " --mkiso-xfce-clean-cli : Will skip mkiso and make clean xfce-desktop ISO"
+    echo " "
+    echo " "
+    message "###"
+    message "# Docker imgsys for building images"
+    message "###"
+    message " --imgsys-amd64"
+    message " --imgsys-arm64"
 
     clean_tmp # Also clean tmp files before exit
     exit 1

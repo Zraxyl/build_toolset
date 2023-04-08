@@ -22,9 +22,9 @@ install_dep() {
 
     # Lets do a hack here with lock
     # TODO: Somehow check if pkg got installed and if not then exit and clear tmp ( otherwise it just errors and dosent remve lock )
-    rm $TOOL_TEMP/.builder_locked
+    rm -f $TOOL_TEMP/.builder_locked
     msg_spacer
-    sudo -S bottle -Syu --needed --noconfirm --disable-download-timeout $FULL_DEP_LIST
+    sudo bottle -Syu --needed --noconfirm --disable-download-timeout linux $FULL_DEP_LIST
     msg_spacer
     touch $TOOL_TEMP/.builder_locked
 }
