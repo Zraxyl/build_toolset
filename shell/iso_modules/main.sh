@@ -99,7 +99,7 @@ make_efi() {
     as_root cp -fv /usr/lib/systemd/boot/efi/systemd-bootx64.efi mnt/EFI/systemd/systemd-bootx64.efi
 
     # Copy over default laoder configs
-    as_root cp -rfv $P_ROOT/tools/iso/loader mnt/
+    as_root cp -rfv $P_ROOT/build/toolset/iso/loader mnt/
 
     as_root chown -R root mnt/
 
@@ -133,7 +133,7 @@ make_base_iso() {
 
     # Copy over bios dependent files form syslinux
     cp -fv /usr/share/syslinux/{isolinux.bin,{ldlinux,libcom32,libmenu,libutil,linux,menu,vesa,vesainfo,vesamenu,whichsys}.c32} syslinux/
-    cp -fv $P_ROOT/tools/iso/isolinux.cfg syslinux/
+    cp -fv $P_ROOT/build/toolset/iso/isolinux.cfg syslinux/
 
     # make other dir's
     mkdir -pv LiveOS kernel
