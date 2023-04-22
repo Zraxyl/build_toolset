@@ -161,8 +161,8 @@ rootfs_defaults() {
 
     # Lets make encrypted string of password for root and non-root user
     # https://askubuntu.com/a/80447
-    $ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
-    $NON_ROOT_PASSWORD=$(echo $DISTRO_NAME | openssl passwd -1 -stdin)
+    export ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
+    export NON_ROOT_PASSWORD=$(echo $DISTRO_NAME | openssl passwd -1 -stdin)
 
     message Creating non-root user
     # Lets add non-root user ( with home dir + add to wheel + adm groups )
