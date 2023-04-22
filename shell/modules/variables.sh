@@ -52,9 +52,9 @@ export DISTRO_NAME=evolinx
 export STRAP="base-strap"
 
 # Rootfs packages
-export CLI_PKG="base-system nano wireless-tools base-install-scripts sudo parted libmd"
-export XFCE_PKG="base-system nano wireless-tools base-install-scripts sudo parted libmd base-desktop-xfce-clean lightdm"
-export PLASMA_PKG="base-system nano wireless-tools base-install-scripts sudo parted libmd base-desktop-plasma-clean plymouth"
+export CLI_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd"
+export XFCE_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd base-desktop-xfce-clean lightdm"
+export PLASMA_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd base-desktop-plasma-clean plymouth"
 
 ##
 # Docker related ( Defaults )
