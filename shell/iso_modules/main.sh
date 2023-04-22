@@ -150,6 +150,9 @@ make_rootfs() {
     as_root mkdir -pv system
 
     as_root $STRAP -G system/ ${CLI_PKG}
+
+    # Now clean up some firmware files that wont be needed for installation in x86_64 env
+    as_root rm -rf system/lib/firmware/{netronome,qcom,mellanox,qca}
 }
 
 # Here we add things to the rootfs such as passwd and etc
