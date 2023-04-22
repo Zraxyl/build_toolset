@@ -18,12 +18,6 @@ find_pkg_location() {
     if [ -d $PKG_ROOT_DIR/core/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/core/$PKG_NAME
         export WHAT_AM_I=core
-    elif [ -d $PKG_ROOT_DIR/cross-tools/$PKG_NAME ]; then
-        export PKG_PATH=$PKG_ROOT_DIR/cross-tools/$PKG_NAME
-        export WHAT_AM_I=cross-tools
-    elif [ -d $PKG_ROOT_DIR/gnome/$PKG_NAME ]; then
-        export PKG_PATH=$PKG_ROOT_DIR/gnome/$PKG_NAME
-        export WHAT_AM_I=gnome
     elif [ -d $PKG_ROOT_DIR/kde/frameworks/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/kde/frameworks/$PKG_NAME
         export WHAT_AM_I=kde
@@ -60,6 +54,12 @@ find_pkg_location() {
     elif [ -d $PKG_ROOT_DIR/kde/utilities/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/kde/utilities/$PKG_NAME
         export WHAT_AM_I=kde
+    elif [ -d $PKG_ROOT_DIR/cross-tools/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/cross-tools/$PKG_NAME
+        export WHAT_AM_I=cross-tools
+    elif [ -d $PKG_ROOT_DIR/gnome/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/gnome/$PKG_NAME
+        export WHAT_AM_I=gnome
     elif [ -d $PKG_ROOT_DIR/xfce/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/xfce/$PKG_NAME
         export WHAT_AM_I=xfce

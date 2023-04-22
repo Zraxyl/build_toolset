@@ -139,6 +139,7 @@ make_base_iso() {
     mkdir -pv LiveOS kernel
 
     as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME $ISO_ROOT/iso/kernel/vmlinuz
+    as_root ls -la $ISO_ROOT/iso/kernel/
 }
 
 # Generate rootfs for squashfs
