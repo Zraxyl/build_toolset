@@ -91,7 +91,7 @@ make_efi() {
     sleep 2
 
     # Copy over vmlinuz from rootfs
-    as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME mnt/
+    as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME mnt/vmlinuz
 
     # Install EFI binaries
     as_root mkdir -pv mnt/EFI/{BOOT,systemd}
