@@ -1,24 +1,26 @@
 check_and_setup_lock() {
     IS_COMPILING=none
 
-    # Lets allow devs to bypass the lockup if variable is given
-    if [ "${IGNORE_LOCKUP}" = "yes" ]; then
-        rm -f $TOOL_TEMP/.builder_locked
-        rm -f $TOOL_TEMP/builds
-    fi
-
     # Check wheather system has a lock on it or not
     if [ -f $TOOL_TEMP/.builder_locked ]; then
         if [ -f $TOOL_TEMP/builds ]; then
-            source $TOOL_TEMP/builds
-            msg_warning Something is still compiling under background...
-            msg_error And that pkg name is: $IS_COMPILING
+            if [ "${IGNORE_LOCKUP}" = "yes" ]; then
+                msg_debug "Lockup ignored"
+            else
+                source $TOOL_TEMP/builds
+                msg_warning Something is still compiling under background...
+                msg_error And that pkg name is: $IS_COMPILING
+            fi
         else
-            msg_warning Something is still compiling under background...
+            if [ "${IGNORE_LOCKUP}" = "yes" ]; then
+                msg_debug "Lockup ignored"
+            else
+                msg_warning Something is still compiling under background...
 
-            show_tmp_status
+                show_tmp_status
 
-            msg_error As we cant reach tmp files for proper specifications we just error out
+                msg_error As we cant reach tmp files for proper specifications we just error out
+            fi
         fi
     else
         # Lock the build system
@@ -42,11 +44,5 @@ show_tmp_status() {
 }
 
 lock_drunk() {
-    # Lets allow devs to bypass the lockup if variable is given
-    if [ "${IGNORE_LOCKUP}" = "yes" ]; then
-        rm -f $TOOL_TEMP/.builder_locked
-        rm -f $TOOL_TEMP/builds
-    else
-        touch $TOOL_TEMP/.builder_locked
-    fi
+    touch $TOOL_TEMP/.builder_locked
 }

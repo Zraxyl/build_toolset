@@ -90,6 +90,30 @@ find_pkg_location() {
     elif [ -d $PKG_ROOT_DIR/server/$PKG_NAME ]; then
         export PKG_PATH=$PKG_ROOT_DIR/server/$PKG_NAME
         export WHAT_AM_I=server
+    elif [ -d $PKG_ROOT_DIR/fonts/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/fonts/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/java/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/java/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/xorg/app/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/xorg/app/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/xorg/data/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/xorg/data/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/xorg/driver/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/xorg/driver/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/xorg/libs/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/xorg/libs/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/xorg/proto/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/xorg/proto/$PKG_NAME
+        export WHAT_AM_I=extra
+    elif [ -d $PKG_ROOT_DIR/xorg/xserver/$PKG_NAME ]; then
+        export PKG_PATH=$PKG_ROOT_DIR/xorg/xserver/$PKG_NAME
+        export WHAT_AM_I=extra
     else
         msg_error "$PKG_NAME was not found ( check for typos or if its new category then remember to add entry for it in builder modules )"
         msg_error "Issue may also occure if you forgot to mention arch ( see --help )"

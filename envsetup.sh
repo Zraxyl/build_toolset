@@ -34,7 +34,7 @@ if [ "$#" -lt 1 ]; then
     show_help
 fi
 
-while (($# >= 1)); do
+while (("$#" >= 1)); do
     case "$1" in
         --) shift 1; break;;
         -h|--help) show_help;;
@@ -42,12 +42,11 @@ while (($# >= 1)); do
         -b|--build) TOOL_BUILD=true;;
         -f|--force-build) echo '--force ' > $TOOL_TEMP/tmpvar001;;
         --no-extract) echo '--noextract ' > $TOOL_TEMP/tmpvar002;;
-        --kde) echo "${DOCKER_CONTAINER_KDE_NAME}" > $TOOL_TEMP/docker001;;
+        --kde) echo "${DOCKER_BUILD_CONTAINER_NAME_KDE}" > $TOOL_TEMP/docker001;;
         --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001;;
-        --mkiso) export intended && menu_selection;;
+        --mkiso) export intended && iso_variant_selector;;
         --mkiso-clean-cli) intended && make_clean_iso;;
         --mkiso-plasma-clean-cli) intended && make_plasma_clean_iso;; # Create LiveOS env with plasma desktop
-        --mkiso-xfce-clean-cli) intended && make_xfce_clean_iso;; # Create LiveOS env with xfce desktop
         --leave-tmp) echo 'true' > $TOOL_TEMP/.keep_tmp;; # This will be used by docker builder only ( keep away from help menu )
         -c|--clean) TOOL_CLEAN=true;;
         -d|--docker)
@@ -61,10 +60,11 @@ while (($# >= 1)); do
             export TOOL_DOCKER=true
             echo true > $TOOL_TEMP/is_docker
         fi ;;
-        --docker-shell) docker_user_start ;;
-        -dr|--docker-reset) docker_reset && message "Docker reset done, exiting" && exit ;;
+        --docker-shell) docker_shell_session ;;
+        -dr|--docker-reset) docker_reset_build && message "Docker reset done, exiting" && exit ;;
         --imgsys-amd64) docker_imgsys_amd64 && exit;;
         --imgsys-arm64) docker_imgsys_arm64 && exit;;
+        --docker-debug) docker_check_health && exit ;;
         *) export PKG_LIST+=("${1}");;
         -*) unknown_option ${1};;
         --*) unknown_option ${1};;

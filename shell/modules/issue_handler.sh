@@ -1,5 +1,5 @@
 interrupt_handle() {
-    clean_tmp
+    force_clean_tmp
     msg_warning POSSIBLE CRASH/ERROR CAUSED BY CTRL+C / INTERRUPT
     sleep 1
 
@@ -7,7 +7,7 @@ interrupt_handle() {
 }
 
 exit_handle() {
-    clean_tmp
+    force_clean_tmp
     msg_debug $?
     msg_warning SCRIPT EXITED
 
@@ -17,7 +17,7 @@ exit_handle() {
 # Untils logging issue is fixed
 tmp_err_handle() {
     msg_warning Script had a error so we need to exit by cleaning tmp files
-    clean_tmp
+    force_clean_tmp
     msg_error Bye
 }
 
@@ -30,7 +30,7 @@ err_handle() {
     msg_spacer
 
     cp $TOOL_TEMP/msg_error.log $P_ROOT/build_error.log
-    clean_tmp
+    force_clean_tmp
     sleep 2
 
     exit

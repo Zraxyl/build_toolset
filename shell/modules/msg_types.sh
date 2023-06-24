@@ -20,16 +20,37 @@ WHITE='\033[1;37m'
 #   msg functions
 ##
 
-loaded() {
-    echo -e "${BLUE}[ LOADED ]: ${LBLUE}$@${WHITE}"
-
-    # As this function prints module loading then also lets sleep a bit so everything catches up in reality
-    sleep 0.3
-}
-
 message() {
     echo -e "${GREEN}[ MESSAGE ]: ${LGREEN}$@${WHITE}"
 }
+
+unimplemented() {
+    echo -e "${ORANGE}[ TO BE IMPLEMENTED ]: ${YELLOW}$@${WHITE}"
+}
+
+# Lets reduce spam of loading modules message for docker env
+if [ -f "$TOOL_TEMP/is_docker" ]; then
+    message "Reloading modules in the background"
+    loaded() {
+        # As this function prints module loading then also lets sleep a bit so everything catches up in reality
+        sleep 0.1
+    }
+
+    loading() {
+        sleep 0.01
+    }
+else
+    loaded() {
+        echo -e "${BLUE}[ LOADED ]: ${LBLUE}$@${WHITE}"
+
+        # As this function prints module loading then also lets sleep a bit so everything catches up in reality
+        sleep 0.1
+    }
+
+    loading() {
+        echo -e "${BLUE}[  LOAD  ]: ${LBLUE}$@${WHITE}"
+    }
+fi
 
 msg_warning() {
     echo -e "${ORANGE}[ WARNING ]: ${YELLOW}$@${WHITE}"
@@ -53,9 +74,10 @@ msg_spacer() {
 ##
 # DEBUG LOGS
 ##
+
 if [ "$SHOW_DEBUG" = "true" ]; then
     msg_debug() {
-        echo -e "${BLUE}[ DEBUG ]: ${LBLUE}$@${WHITE}"
+        echo -e "${BLUE}[ DEBUG ]-> ${YELLOW}$@${WHITE}"
     }
 else
     msg_debug() {

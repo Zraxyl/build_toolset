@@ -11,3 +11,7 @@ clean_tmp() {
         sudo rm -rf $TOOL_TEMP
     fi
 }
+
+force_clean_tmp() {
+    sudo rm -rf $TOOL_TEMP
+}

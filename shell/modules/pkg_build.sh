@@ -10,6 +10,17 @@ build_pkg() {
         source $TOOL_TEMP/envvar001 # Specifies if pkgrel bumping is needed ( if not then true for skip )
     fi
 
+    ## makepkg var
+    # tmpvar001 = -f /--force-build
+    # tmpvar002 = --no-extract
+    #
+    ## docker var
+    # docker001 = --kde
+    #
+    ### Env var
+    # envvar001 = --pkgrel-bump
+    ##
+
     for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
         PKG_NAME=$(basename "${PKG_LIST[p]}")
 
@@ -39,6 +50,10 @@ build_pkg() {
             msg_error "directory or PKGBUILD is missing for asked pkg"
         fi
 
+        if [ -f $TOOL_TEMP/envvar001 ]; then
+            export TOOL_SKIPBUMP=false
+        fi
+
         if [ "$TOOL_SKIPBUMP" = false ];then
             # Make a copy of PKGBUILD for release ver bumper
             cp PKGBUILD PKGBUILD_NEW
@@ -53,7 +68,7 @@ build_pkg() {
         msg_spacer
 
         msg_debug ---
-        msg_debug // BASIC ORIG INFO
+        msg_debug // BASIC PKGBUILD INFO
         msg_debug PKGNAME=$pkgname
         msg_debug PKGVER=$pkgver
         msg_debug PKGREL=$pkgrel
@@ -71,7 +86,7 @@ build_pkg() {
         if [ "$TOOL_SKIPBUMP" = false ];then
             LC_CTYPE=en_US.UTF-8 makepkg -p PKGBUILD_NEW $MAKEPKG_EXTRA_ARG
 
-            #Now as the build finished we move our new PKGBUILD here
+            # Now as the build finished we move our new PKGBUILD here
             cp -f PKGBUILD_NEW PKGBUILD
             rm -f PKGBUILD_NEW
         else
@@ -79,19 +94,18 @@ build_pkg() {
         fi
 
         # Cleaning temp is needed, otherwise we have lock on and new compile of pkg cant be started ( basically clean on error here )
-        echo $TOOL_SKIPBUMP
         if [ "$TOOL_SKIPBUMP" = false ];then
             if [ -f $PKG_NAME-$PKG_VERSION-$srel-$P_ARCH.pkg.tar.gz ]; then
                 msg_debug pkg got compiled
             else
-                clean_tmp
+                force_clean_tmp
                 msg_error pkg didnt compile, now error!
             fi
         else
             if [ -f $PKG_NAME-$PKG_VERSION-$pkgrel-$P_ARCH.pkg.tar.gz ]; then
                 msg_debug pkg got compiled
             else
-                clean_tmp
+                force_clean_tmp
                 msg_error pkg didnt compile, now error!
             fi
         fi
@@ -128,11 +142,11 @@ bump_rel() {
 }
 
 build_pkg_docker() {
-    docker_set_kde_status
-
     sleep 1
 
-    docker_initial_setup
+    docker_check_if_kde
+
+    docker_check_health
 
     for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
     rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
@@ -143,17 +157,27 @@ build_pkg_docker() {
     # --leave-tmp is used here because the pkg's here are looped until every
     # single of them gets built, but as the script ends in docker then it tries to
     # clean the tmp that has our flags give by main script here
-
     message "DOCKER: Started compiling package $PKG_NAME"
-    docker_user_run_cmd "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
+
+    # Do little check weather we use KDE or base container for build
+    if [ "$(cat $TOOL_CHECKS/docker_kde)" = "true" ]; then
+        msg_debug "Using KDE container"
+        docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME_KDE "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
+
+        # Reset the container
+        docker_build_kde_reset
+    else
+        msg_debug "Using build container"
+        docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
+
+        # Reset the container
+        docker_build_base_reset
+    fi
 
     rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
 
-    # Reset is needed for containers so they start to build new package without older pkg dependencies
-    # Keeps hidden linked deps results lower
-    docker_reset
-
     done
 
-    rm -f $TOOL_TEMP/.keep_tmp
+    # Clean tmp
+    force_clean_tmp
 }

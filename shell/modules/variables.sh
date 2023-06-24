@@ -53,27 +53,29 @@ export STRAP="base-strap"
 
 # Rootfs packages
 export CLI_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd"
-export XFCE_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd base-desktop-xfce-clean lightdm"
-export PLASMA_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd base-desktop-plasma-clean plymouth"
+export INSTALLER_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd plymouth plasma-desktop konsole"
 
 ##
 # Docker related ( Defaults )
 ##
 
 export DOCKER_IMAGE_NAME="hilledkinged/evolinx"
-
-export DOCKER_CONTAINER_NAME=evolinx_dev
-export DOCKER_CONTAINER_KDE_NAME=evolinx_kde_dev
+export DOCKER_IMAGE_NAME_TEMP="evolinx/temp_img"
+export DOCKER_BASE_CONTAINER_NAME=evolinx_base
+export DOCKER_KDE_CONTAINER_NAME=evolinx_kde
+export DOCKER_BUILD_CONTAINER_NAME=evolinx_build
+export DOCKER_BUILD_CONTAINER_NAME_KDE=evolinx_build_kde
+export DOCKER_CONTAINER_NAME=none
 export DOCKER_CONTAINER_KDE=false
 export DOCKER_USER_FOLDER=/home/developer
 export DOCKER_PKG="sudo nano mpfr mpc base-devel m4 git grep gawk file"
-export DOCKER_KDE_PKG="qt5 qt6"
+export DOCKER_PKG_KDE="ceph qt5 qt6 cmake meson ninja"
 
 ##
 # Developers friend
 ##
 
-export SHOW_DEBUG=false
+export SHOW_DEBUG=true
 
 # This is needed so system catches up with all exports
 sleep 0.1
