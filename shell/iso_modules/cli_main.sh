@@ -13,6 +13,34 @@ make_cli_rootfs() {
 
     # Now clean up some firmware files that wont be needed for installation in x86_64 env
     as_root rm -rf $ISO_ROOT/rootfs/system/lib/firmware/{netronome,qcom,mellanox,qca}
+
+    set +e
+
+    # Now clean up some firmware files that wont be needed for installation in x86_64 env
+    as_root rm -rf $ISO_ROOT/rootfs/system/lib/firmware/{netronome,qcom,mellanox,qca}
+
+    # Same for other things
+    as_root rm -rf $ISO_ROOT/rootfs/system/var/cache/bottle/pkg/*
+    as_root rm -rf $ISO_ROOT/rootfs/system/include/
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/include
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/scr
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/libexec/gcc
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/lib*.a
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/lib*.la
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/*/lib*.a
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/*/lib*.la
+    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib/lib*.a
+
+    # Firmware
+    as_root mv $ISO_ROOT/rootfs/system/lib/firmware/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system
+    as_root rm -rf $ISO_ROOT/rootfs/system/lib/firmware/*
+    as_root mv $ISO_ROOT/rootfs/system/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system/lib/firmware/
+
+    # strip
+    as_root strip --strip-unneeded $ISO_ROOT/rootfs/system/usr/bin/* &> /dev/null
+    as_root strip --strip-unneeded $ISO_ROOT/rootfs/system/usr/lib*/*.so &> /dev/null
+
+    set -e
 }
 
 # Start from scratch and delete old files

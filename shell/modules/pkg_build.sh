@@ -165,13 +165,13 @@ build_pkg_docker() {
         docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME_KDE "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
 
         # Reset the container
-        docker_build_kde_reset
+        #docker_build_kde_reset
     else
         msg_debug "Using build container"
         docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
 
         # Reset the container
-        docker_build_base_reset
+        #docker_build_base_reset
     fi
 
     rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked

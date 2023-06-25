@@ -73,6 +73,10 @@ loading "Docker functions..."
 source $P_ROOT/build/toolset/shell/modules/docker_modules.sh
 loaded "Docker functions"
 
+loading "Repo update system functions"
+source $P_ROOT/build/toolset/shell/modules/repo_modules.sh
+loaded "Repo update system functions"
+
 # Feed the scriptlet main arch
 export ARCH=$(cat $TOOL_TEMP/is_arch)
 

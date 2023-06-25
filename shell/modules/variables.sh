@@ -52,7 +52,8 @@ export DISTRO_NAME=evolinx
 export STRAP="base-strap"
 
 # Rootfs packages
-export CLI_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd"
+export CLI_PKG="base-system nano dracut base-install-scripts sudo parted libmd"
+#export CLI_PKG="base-minimal util-linux coreutils libseccomp linux"
 export INSTALLER_PKG="base-system nano dracut wireless-tools base-install-scripts sudo parted libmd plymouth plasma-desktop konsole"
 
 ##

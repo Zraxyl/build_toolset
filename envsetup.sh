@@ -45,10 +45,11 @@ while (("$#" >= 1)); do
         --kde) echo "${DOCKER_BUILD_CONTAINER_NAME_KDE}" > $TOOL_TEMP/docker001;;
         --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001;;
         --mkiso) export intended && iso_variant_selector;;
-        --mkiso-clean-cli) intended && make_clean_iso;;
+        --mkiso-clean-cli) intended && make_cli_clean_iso;;
         --mkiso-plasma-clean-cli) intended && make_plasma_clean_iso;; # Create LiveOS env with plasma desktop
         --leave-tmp) echo 'true' > $TOOL_TEMP/.keep_tmp;; # This will be used by docker builder only ( keep away from help menu )
         -c|--clean) TOOL_CLEAN=true;;
+        --repo-update) echo "WIP" ;;
         -d|--docker)
         if [ $# -eq 1 ]; then
                 msg_error "Docker option cant be used alone ( need to be first arg! )"
