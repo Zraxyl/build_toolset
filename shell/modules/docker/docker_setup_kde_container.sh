@@ -6,13 +6,19 @@
 ##
 
 docker_check_kde_container() {
-    if [ "$(sudo docker container ls -a | grep -wo $DOCKER_KDE_CONTAINER_NAME)" = "$DOCKER_KDE_CONTAINER_NAME" ]; then
+    sleep 1
+    CHECKIT=$(sudo docker container ls -a | grep -wo $DOCKER_KDE_CONTAINER_NAME)
+
+    if [ -z ${CHECKIT} ]; then
+        CHECKIT="empty"
+    fi
+
+    if [ "$CHECKIT" = "$DOCKER_KDE_CONTAINER_NAME" ]; then
         message "KDE container already imported"
     else
         message "KDE container seems to be missing, so lets import it"
         docker_setup_kde
         docker_start_container $DOCKER_KDE_CONTAINER_NAME
-
     fi
 }
 
@@ -57,7 +63,9 @@ docker_kde_presetup() {
 docker_update_kde() {
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME
 
-    # Make sure that container has sudo installed with
+    # Make sure that container has sudo installed
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout --needed -Sy ${DOCKER_PKG} ${DOCKER_PKG_KDE}"
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc"
     docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -Syu"
 
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME

@@ -144,11 +144,17 @@ bump_rel() {
 build_pkg_docker() {
     sleep 1
 
+    msg_debug "Checking --kde arg is present"
     docker_check_if_kde
 
+    msg_debug "Doing docker health check"
     docker_check_health
 
+    msg_debug "List of packages to build: ${PKG_LIST[@]}"
+
     for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
+
+    msg_debug "Removing some temporary flags"
     rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
 
     PKG_NAME=$(basename "${PKG_LIST[p]}")

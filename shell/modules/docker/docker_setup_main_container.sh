@@ -1,5 +1,12 @@
 docker_check_base_container() {
-    if [ "$(sudo docker container ls -a | grep -wo hilledkinged/evolinx)" = "hilledkinged/evolinx" ]; then
+    sleep 1
+    CHECKIT=$(sudo docker container ls -a | grep -wo hilledkinged/evolinx)
+
+    if [ -z ${CHECKIT} ]; then
+        CHECKIT="empty"
+    fi
+
+    if [ "${CHECKIT}" = "hilledkinged/evolinx" ]; then
         message "Base container already made"
     else
         message "base container seems to be missing, so lets make it"
@@ -32,6 +39,7 @@ docker_base_container_sysedit() {
 
     # Make sure that container has sudo installed with
     docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Sy linux ${DOCKER_PKG}"
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc"
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
 

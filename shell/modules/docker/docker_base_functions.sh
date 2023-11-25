@@ -86,9 +86,14 @@ docker_copy_pkgmanager_conf() {
     # Copy over local package manager.conf ( specific for arch)
     if [ "${ARCH}" = "x86_64"  ]; then
         # AMD64 config
-        docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+        if [ "${USE_STAGING}" = "yes" ]; then
+            docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/staging_amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+        else
+            docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/stable_amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+        fi
     elif [ "${ARCH}" = "aarch64"  ]; then
         # ARM64 config
+        # For arm64 we always have staging right now
         docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/arm64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
     fi
 }

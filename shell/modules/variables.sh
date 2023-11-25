@@ -13,6 +13,8 @@ export ISO_ROOT=$TOOL_OUT/system_iso
 export TOOL_USER=$(whoami)
 export TOOL_MAIN_NAME=EVOLINX
 
+export USE_STAGING=yes
+
 ##
 # Failsafe incase of error
 ##

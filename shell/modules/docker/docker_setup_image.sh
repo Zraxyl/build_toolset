@@ -18,7 +18,7 @@ docker_image_check() {
     else
         message "Toolset check list has missing check, checking image and container status"
 
-        if [ $(sudo docker image ls -a | grep -o hilledkinged/evolinx) = "hilledkinged/evolinx" ]; then
+        if [ "$(sudo docker image ls -a | grep -o hilledkinged/evolinx)" = "hilledkinged/evolinx" ]; then
             message "Image already pulled, skipping..."
         else
             message "Pulling evolinx image as none was found"
