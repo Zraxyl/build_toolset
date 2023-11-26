@@ -1,12 +1,12 @@
 docker_check_build_container() {
     sleep 1
-    CHECKIT=$(sudo docker container ls -a | grep -wo $DOCKER_BUILD_CONTAINER_NAME)
+    export CHECKIT1=$(sudo docker container ls -a | grep -wo $DOCKER_BUILD_CONTAINER_NAME)
 
-    if [ -z ${CHECKIT} ]; then
+    if [ -z ${CHECKIT1} ]; then
         CHECKIT="empty"
     fi
 
-    if [ "${CHECKIT}" = "$DOCKER_BUILD_CONTAINER_NAME" ]; then
+    if [ "${CHECKIT1}" = "$DOCKER_BUILD_CONTAINER_NAME" ]; then
         message "Build container already imported, so lets skip"
     else
         message "Build container seems to be missing, so lets import it"

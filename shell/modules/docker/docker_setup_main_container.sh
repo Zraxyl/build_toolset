@@ -1,12 +1,12 @@
 docker_check_base_container() {
     sleep 1
-    CHECKIT=$(sudo docker container ls -a | grep -wo hilledkinged/evolinx)
+    export CHECKIT4=$(sudo docker container ls -a | grep -wo hilledkinged/evolinx)
 
-    if [ -z ${CHECKIT} ]; then
+    if [ -z ${CHECKIT4} ]; then
         CHECKIT="empty"
     fi
 
-    if [ "${CHECKIT}" = "hilledkinged/evolinx" ]; then
+    if [ "${CHECKIT4}" = "hilledkinged/evolinx" ]; then
         message "Base container already made"
     else
         message "base container seems to be missing, so lets make it"

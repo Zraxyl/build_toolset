@@ -7,13 +7,13 @@
 
 docker_check_kde_container() {
     sleep 1
-    CHECKIT=$(sudo docker container ls -a | grep -wo $DOCKER_KDE_CONTAINER_NAME)
+    export CHECKIT3=$(sudo docker container ls -a | grep -wo $DOCKER_KDE_CONTAINER_NAME)
 
-    if [ -z ${CHECKIT} ]; then
+    if [ -z ${CHECKIT3} ]; then
         CHECKIT="empty"
     fi
 
-    if [ "$CHECKIT" = "$DOCKER_KDE_CONTAINER_NAME" ]; then
+    if [ "$CHECKIT3" = "$DOCKER_KDE_CONTAINER_NAME" ]; then
         message "KDE container already imported"
     else
         message "KDE container seems to be missing, so lets import it"

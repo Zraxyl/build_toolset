@@ -1,12 +1,12 @@
 docker_check_build_container_kde() {
     sleep 1
-    CHECKIT=$(sudo docker container ls -a | grep -wo $DOCKER_BUILD_CONTAINER_NAME_KDE)
+    export CHECKIT2=$(sudo docker container ls -a | grep -wo $DOCKER_BUILD_CONTAINER_NAME_KDE)
 
-    if [ -z ${CHECKIT} ]; then
+    if [ -z ${CHECKIT2} ]; then
         CHECKIT="empty"
     fi
 
-    if [ "${CHECKIT}" = "$DOCKER_BUILD_CONTAINER_NAME_KDE" ]; then
+    if [ "${CHECKIT2}" = "$DOCKER_BUILD_CONTAINER_NAME_KDE" ]; then
         message "KDE build container already imported, so lets skip"
     else
         message "KDE build container seems to be missing, so lets import it"

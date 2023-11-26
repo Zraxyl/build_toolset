@@ -26,5 +26,7 @@ loaded "    docker -> build container setup"
 source $P_ROOT/build/toolset/shell/modules/docker/docker_setup_build_container_kde.sh
 loaded "    docker -> kde build container setup"
 
+sleep 1
+
 source $P_ROOT/build/toolset/shell/modules/docker/docker_system.sh
 loaded "    docker -> system"
