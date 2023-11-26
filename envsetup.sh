@@ -42,6 +42,7 @@ while (("$#" >= 1)); do
         -b|--build) TOOL_BUILD=true;;
         -f|--force-build) echo '--force ' > $TOOL_TEMP/tmpvar001;;
         --no-extract) echo '--noextract ' > $TOOL_TEMP/tmpvar002;;
+        --shell) itshell_spawn_interactive_shell && clean_tmp;;
         --kde) echo "${DOCKER_BUILD_CONTAINER_NAME_KDE}" > $TOOL_TEMP/docker001;;
         --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001;;
         --mkiso) export intended && iso_variant_selector;;

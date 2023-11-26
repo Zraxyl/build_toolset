@@ -36,6 +36,8 @@ export INTENDED=idk
 ##
 export IGNORE_LOCKUP=yes
 
+export DEV_FOLDER="${P_ROOT}/build/developer"
+
 ##
 # Distro specific exports
 ##

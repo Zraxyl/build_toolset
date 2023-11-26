@@ -88,4 +88,8 @@ loaded "ISO modules"
 source $P_ROOT/build/toolset/dialog/dialog_manager.sh
 loaded "Dialog manager"
 
+# Load interactive shell ( Always have it last module! )
+source $P_ROOT/build/toolset/shell/modules/interactive_shell.sh
+loaded "interactive Shell"
+
 msg_spacer
