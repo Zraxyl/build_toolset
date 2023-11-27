@@ -8,7 +8,11 @@ itshell_help() {
     message "##"
     message "# Interactive build shell help menu"
     message "##"
-    echo " "
+
+    msg_spacer
+
+    echo "# Build commands"
+
     message "bc - This will build the package without docker option"
     message "example: 'bc linux glib2'"
     echo " "
@@ -17,9 +21,27 @@ itshell_help() {
     echo " "
     message "bcdk - This will build the package with docker option ( kde )"
     message "example: 'bcdk plasma-desktop'"
+
+    msg_spacer
+
+    echo "# Docker shell"
+
+    message "dshell - This will enter you to the build container ( Allows to do changes if needed )"
+    message "example: 'dshell'"
     echo " "
+    message "dkshell - This is same as dshell but for kde build container"
+    message "example: 'dkshell'"
+
+    msg_spacer
+
+    echo "# Other"
+
     message "pkgedit - This will opne up kate with PKGBUILD issued by pkgname"
     message "example: 'pkgedit bash coreutils util-linux'"
+    echo " "
+    message "reload - reload all the toolset modules ( Allows to load in any changes )"
+    message "example: 'reload'"
+
 }
 
 itshell_health_check() {
@@ -29,63 +51,13 @@ itshell_health_check() {
     echo " "
 }
 
-# Build packages locally without docker
-itshell_pkgbuild_local() {
-    export PKG_LIST=("${@}")
+itshell_shell() {
+    # Make sure we remove reload tmp file if it exists
+    if [ -f "${TOOL_OUT}/.ITSHELL_RELOAD" ]; then
+        rm -f "${TOOL_OUT}/.ITSHELL_RELOAD"
+    fi
 
-    build_pkg
-}
-
-# Build packages with docker
-itshell_pkgbuild_docker() {
-    export PKG_LIST=("${@}")
-
-    for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
-        PKG_NAME=$(basename "${PKG_LIST[p]}")
-
-        docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
-
-
-        message "BUILD: Starting to reset build container - CORE"
-        sleep 5
-        docker_build_base_reset
-    done
-}
-
-# Build packages with docker ( KDE )
-# KDE = qt5 and qt6 preinstalled
-itshell_pkgbuild_docker_kde() {
-    export PKG_LIST=("${@}")
-
-    for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
-        PKG_NAME=$(basename "${PKG_LIST[p]}")
-
-        docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME_KDE "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
-
-        message "BUILD: Starting to reset build container - KDE"
-        sleep 5
-
-        docker_build_kde_reset
-    done
-}
-
-itshell_pkgedit() {
-    export PKG_LIST=("${@}")
-    export PKGEDIT_LIST=" "
-
-    for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
-        # Get current loop pkgname
-        PKG_NAME=$(basename "${PKG_LIST[p]}")
-
-        # Find the base dir of pkg
-        find_pkg_location
-
-        # Add the found pkg with dir to the variable
-        export PKGEDIT_LIST+="${PKG_PATH}/PKGBUILD "
-    done
-
-    # Run them all with kate
-    kate ${PKGEDIT_LIST}
+    subshell=true bash --rcfile ${DEV_FOLDER}/base/bashrc
 }
 
 itshell_spawn_interactive_shell() {
@@ -96,8 +68,12 @@ itshell_spawn_interactive_shell() {
     trap - ERR
     set +e
 
+    rm -f ${TOOL_OUT}/.ITSHELL_RELOAD
+
     # Now spawn new bash shell with new bashrc that has aliases in place
-    subshell=true bash --rcfile ${DEV_FOLDER}/base/bashrc
+    itshell_shell
+
+    rm -f ${TOOL_OUT}/.ITSHELL_RELOAD
 
     set -e
 }

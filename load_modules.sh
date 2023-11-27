@@ -90,6 +90,7 @@ loaded "Dialog manager"
 
 # Load interactive shell ( Always have it last module! )
 source $P_ROOT/build/toolset/shell/modules/interactive_shell.sh
-loaded "interactive Shell"
+source $P_ROOT/build/toolset/shell/modules/itshell/itshell_subfunctions.sh
+loaded "interactive Shell and its sub-modules"
 
 msg_spacer
