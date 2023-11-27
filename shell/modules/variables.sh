@@ -80,7 +80,7 @@ export DOCKER_PKG_KDE="ceph qt5 qt6 cmake meson ninja"
 # Developers friend
 ##
 
-export SHOW_DEBUG=true
+export SHOW_DEBUG=false
 
 # This is needed so system catches up with all exports
 sleep 0.1
