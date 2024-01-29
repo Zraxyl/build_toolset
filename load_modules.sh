@@ -7,6 +7,25 @@ source $P_ROOT/build/toolset/shell/modules/variables.sh
 
 # Load up msg types
 source $P_ROOT/build/toolset/shell/modules/msg_types.sh
+
+## ------------------------------------------------------------
+# Here we need to notify dev that we have these options enabled
+##
+if [ "${USE_STAGING}" = "yes" ]; then
+    export BRANCH_TYPE_IS="STAGING"
+else
+    export BRANCH_TYPE_IS="STABLE"
+fi
+msg_spacer
+sel_option "ENVSETUP -> ${TOOL_VERSION_CODE}"
+sel_option "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
+sel_option "DEBUG MODE -> ${SHOW_DEBUG}"
+msg_spacer
+unset BRANCH_TYPE_IS
+##
+# Resume Loading modules and prompting messages
+## ------------------------------------------------------------
+
 loaded "Message types"
 
 # Check for root user before making tmp dir's
@@ -25,11 +44,14 @@ loaded "Temp manager"
 
 # We need build lock function so dev/user cant compile 2 diff pkg's at the same time
 # Would be ok in non-docker env but issue handler may kill lock file if error happens ( so lets run it here )
+# TODO: This here needs major rework or improvements so envsetup wont launch until old work is done
+# TODO: Either remember the main pid of envsetup and check if its alive or killed by crash
 source $P_ROOT/build/toolset/shell/modules/lockup.sh
 check_and_setup_lock
 loaded "Lockup functions"
 
 # Load issue handler and start it straight away
+# TODO: It works somewhat but it wont see if main process is killed by docker and just leaves tmp files ( which we cant have )
 source $P_ROOT/build/toolset/shell/modules/issue_handler.sh
 #start_logging # TODO: Dont cancel out error messages in user/dev cli -->
 # ( causes invisible sudo prompt and etc that can cause more issues for docker )
@@ -88,9 +110,9 @@ loaded "ISO modules"
 source $P_ROOT/build/toolset/dialog/dialog_manager.sh
 loaded "Dialog manager"
 
-# Load interactive shell ( Always have it last module! )
+# Load interactive shell ( Always have it as last module! )
 source $P_ROOT/build/toolset/shell/modules/interactive_shell.sh
 source $P_ROOT/build/toolset/shell/modules/itshell/itshell_subfunctions.sh
-loaded "interactive Shell and its sub-modules"
+loaded "Interactive Shell and its sub-modules"
 
 msg_spacer

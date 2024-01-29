@@ -2,6 +2,8 @@
 # Here we will export all variables
 ##
 
+export TOOL_VERSION_CODE=1000
+
 export TOOL_BUILD=false
 export TOOL_CLEAN=false
 export TOOL_DOCKER=false

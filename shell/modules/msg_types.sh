@@ -28,6 +28,10 @@ unimplemented() {
     echo -e "${ORANGE}[ TO BE IMPLEMENTED ]: ${YELLOW}$@${WHITE}"
 }
 
+sel_option() {
+    echo -e "${ORANGE}[ ATTENTION ]: ${YELLOW}$@${WHITE}"
+}
+
 # Lets reduce spam of loading modules message for docker env
 if [ -f "$TOOL_TEMP/is_docker" ]; then
     message "Reloading modules in the background"

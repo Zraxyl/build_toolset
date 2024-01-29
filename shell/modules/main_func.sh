@@ -30,7 +30,7 @@ check_projects() {
 }
 
 install_required_deps() {
-    REQ_PKGS=" docker nano mpfr mpc m4 base-devel"
+    REQ_PKGS=" docker nano mpfr mpc m4 base-devel dialog"
     message "Please allow this one time to run inital setup of bottle install"
     sudo bottle -Sy --needed --noconfirm --disable-download-timeout $REQ_PKGS
 }
@@ -41,9 +41,9 @@ unknown_option() {
 }
 
 show_help() {
-    message "#########################"
+    message "###########################"
     message "# Usage of toolset script #"
-    message "#########################"
+    message "###########################"
     echo " "
     message "###"
     message "# Arch based options"
@@ -86,6 +86,6 @@ show_help() {
     message " --imgsys-amd64"
     message " --imgsys-arm64"
 
-    clean_tmp # Also clean tmp files before exit
+    force_clean_tmp # Also clean tmp files before exit
     exit 1
 }

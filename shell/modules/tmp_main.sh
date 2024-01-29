@@ -12,6 +12,7 @@ clean_tmp() {
     fi
 }
 
+# Force clean can be used when certain functions cant use normal clean_tmp
 force_clean_tmp() {
     sudo rm -rf $TOOL_TEMP
 }
