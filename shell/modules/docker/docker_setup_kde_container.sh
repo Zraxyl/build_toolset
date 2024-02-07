@@ -51,7 +51,7 @@ docker_kde_presetup() {
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME
 
     # Make sure that container has sudo installed with
-    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Sy linux ${DOCKER_PKG_KDE}"
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Sy ${DOCKER_PKG_KDE}"
 
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME
 

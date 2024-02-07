@@ -2,6 +2,16 @@
 # This module contains static functions for other docker modules
 ##
 
+# Sometimes our containers need to be fixed so we run essential stuff before
+# running any other commands ( example aarch64 wants ldconfig -r to be runned, otherwise
+# we get some errors about libs not found )
+docker_run_essentials() {
+    msg_debug "DOCKER: Running essential commands"
+
+    # Update ldconfig cache
+    sudo docker exec --interactive --tty $1 su root -c "ldconfig"
+}
+
 # Start the container
 docker_start() {
     msg_debug "DOCKER: Executed bash shell"
@@ -17,6 +27,10 @@ docker_user_start() {
 docker_start_container() {
     msg_debug "Starting container: $1"
     sudo docker start $1 &> /dev/null
+
+    sleep 1
+
+    docker_run_essentials $1
 }
 
 docker_stop_container() {
@@ -49,6 +63,8 @@ docker_import() {
     --name $1 \
     --volume $P_ROOT:$DOCKER_USER_FOLDER/$TOOL_MAIN_NAME \
     --tty \
+    -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
+    -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
     $DOCKER_IMAGE_NAME_TEMP /bin/bash
     message "Build container created"
 
@@ -95,5 +111,6 @@ docker_copy_pkgmanager_conf() {
         # ARM64 config
         # For arm64 we always have staging right now
         docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/arm64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+        docker_run_cmd $1 "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
     fi
 }

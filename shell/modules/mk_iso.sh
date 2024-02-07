@@ -4,7 +4,6 @@
 #
 
 if [ "${ARCH}" = "aarch64" ]; then
-	clean_tmp
 	msg_warning "AArch64 isn't supported yet!!!"
 else
 	msg_debug Arch is OK

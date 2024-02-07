@@ -24,7 +24,14 @@ install_dep() {
     # TODO: Somehow check if pkg got installed and if not then exit and clear tmp ( otherwise it just errors and dosent remve lock )
     rm -f $TOOL_TEMP/.builder_locked
     msg_spacer
-    sudo bottle -Syu --needed --noconfirm --disable-download-timeout linux $FULL_DEP_LIST
+
+    # HACK: AMD64 port always needs linux package as it has headers where aarch64 port has linux-headers package
+    if [ "${P_ARCH}" = "aarch64" ]; then
+        sudo bottle -Syu --needed --noconfirm --disable-download-timeout base-dev linux-headers $FULL_DEP_LIST
+    else
+        sudo bottle -Syu --needed --noconfirm --disable-download-timeout base-dev linux $FULL_DEP_LIST
+    fi
+
     msg_spacer
     touch $TOOL_TEMP/.builder_locked
 }

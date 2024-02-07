@@ -75,8 +75,14 @@ export DOCKER_BUILD_CONTAINER_NAME_KDE=evolinx_build_kde
 export DOCKER_CONTAINER_NAME=none
 export DOCKER_CONTAINER_KDE=false
 export DOCKER_USER_FOLDER=/home/developer
-export DOCKER_PKG="sudo nano mpfr mpc base-devel m4 git grep gawk file"
-export DOCKER_PKG_KDE="ceph qt5 qt6 cmake meson ninja"
+
+# X86_64 evolinx
+export DOCKER_AMD64_PKG="sudo nano mpfr mpc base-devel m4 git grep gawk file linux"
+export DOCKER_AMD64_PKG_KDE="ceph qt5 qt6 cmake meson ninja linux"
+
+# AArch64 evolinx
+export DOCKER_AARCH64_PKG="sudo nano mpfr mpc m4 git grep gawk cmake meson ninja file make automake texinfo autoconf linux-headers"
+export DOCKER_AARCH64_PKG_KDE="cmake meson ninja"
 
 ##
 # Developers friend

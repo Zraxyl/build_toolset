@@ -129,5 +129,4 @@ case "$TOOL_BUILD" in
         esac
 esac
 
-# On successful exit clean tmp
-clean_tmp
+force_clean_tmp

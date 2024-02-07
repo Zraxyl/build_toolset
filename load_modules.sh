@@ -28,6 +28,11 @@ unset BRANCH_TYPE_IS
 
 loaded "Message types"
 
+# Change permissions for some dirs so all users can read/write
+sudo chmod -R a+rw $P_ROOT/build
+sudo chmod -R a+rw $P_ROOT/out
+sudo chmod -R a+rw $P_ROOT/internal/pkgbuild
+
 # Check for root user before making tmp dir's
 if [[ $EUID -ne 0 ]]; then
         msg_debug "User isn't root, thats good"

@@ -190,6 +190,5 @@ build_pkg_docker() {
 
     done
 
-    # Clean tmp
     force_clean_tmp
 }

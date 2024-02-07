@@ -1,6 +1,8 @@
 create_tmp() {
     # Create tmp folder
     mkdir -p $TOOL_TEMP
+
+    sudo chmod -R a+rw $TOOL_TEMP
 }
 
 clean_tmp() {

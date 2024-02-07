@@ -22,7 +22,11 @@ docker_image_check() {
             message "Image already pulled, skipping..."
         else
             message "Pulling evolinx image as none was found"
-            sudo docker pull ${DOCKER_IMAGE_NAME}:latest
+            if [ "${P_ARCH}" = "aarch64" ]; then
+                sudo docker pull ${DOCKER_IMAGE_NAME}:aarch64
+            else
+                sudo docker pull ${DOCKER_IMAGE_NAME}:latest
+            fi
         fi
     fi
 }
