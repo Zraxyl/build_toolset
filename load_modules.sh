@@ -28,11 +28,6 @@ unset BRANCH_TYPE_IS
 
 loaded "Message types"
 
-# Change permissions for some dirs so all users can read/write
-sudo chmod -R a+rw $P_ROOT/build
-sudo chmod -R a+rw $P_ROOT/out
-sudo chmod -R a+rw $P_ROOT/internal/pkgbuild
-
 # Check for root user before making tmp dir's
 if [[ $EUID -ne 0 ]]; then
         msg_debug "User isn't root, thats good"
@@ -46,6 +41,11 @@ fi
 source $P_ROOT/build/toolset/shell/modules/tmp_main.sh
 create_tmp
 loaded "Temp manager"
+
+# Change permissions for some dirs so all users can read/write
+sudo chmod -R a+rw $P_ROOT/build
+sudo chmod -R a+rw $P_ROOT/out
+sudo chmod -R a+rw $P_ROOT/internal/pkgbuild
 
 # We need build lock function so dev/user cant compile 2 diff pkg's at the same time
 # Would be ok in non-docker env but issue handler may kill lock file if error happens ( so lets run it here )
