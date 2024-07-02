@@ -9,7 +9,7 @@ docker_run_essentials() {
     msg_debug "DOCKER: Running essential commands"
 
     # Update ldconfig cache
-    sudo docker exec --interactive --tty $1 su root -c "ldconfig"
+    sudo docker exec --interactive --tty $1 su root -c ldconfig
 }
 
 # Start the container

@@ -22,10 +22,16 @@ docker_base_container_sysedit() {
 
     set +e
 
+    export UNI_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
+
     # Add developer user ( used to build pkg's without root
     docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "useradd developer -m -g wheel"
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
+
+    # Give users passwd so su dosent whine about auth info issues
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "usermod --password $UNI_PASSWORD root"
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "usermod --password $UNI_PASSWORD developer"
 
     # Perms fixes + ${PACKAGE_MANAGER} changes
     docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/rootsys/developer.sh"
