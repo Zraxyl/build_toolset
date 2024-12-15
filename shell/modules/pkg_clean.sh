@@ -2,7 +2,8 @@
 # Here we will declare function how and where to clean pkg's
 ##
 
-# TODO
+# Hilledkinged
+# TODO: why, what, when did this happen to be added into TODO
 clean_pkg() {
     for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
     PKG_NAME=$(basename "${PKG_LIST[p]}")
@@ -38,6 +39,8 @@ clean_pkg() {
     done
 }
 
+# Hilledkinged
+# TODO: Huh, this needs to be looked up ( ancient code that even I dont wanna touch )
 clean_pkg_docker() {
     docker_initial_setup
 
@@ -45,7 +48,7 @@ clean_pkg_docker() {
     PKG_NAME=$(basename "${PKG_LIST[p]}")
 
     message "DOCKER: $PKG_NAME has been selected for cleaning"
-    docker_user_run_cmd "cd ~/$TOOL_MAIN_NAME && ./drunk -c ${PKG_NAME}"
+    docker_user_run_cmd "cd ~/$TOOL_MAIN_NAME && ./envsetup -c ${PKG_NAME}"
 
     # clean tmp
     clean_tmp

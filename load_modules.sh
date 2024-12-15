@@ -18,6 +18,7 @@ else
 fi
 msg_spacer
 sel_option "ENVSETUP -> ${TOOL_VERSION_CODE}"
+sel_option "T-SYSTEM -> ${TOOL_MAIN_NAME}"
 sel_option "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
 sel_option "DEBUG MODE -> ${SHOW_DEBUG}"
 msg_spacer
@@ -45,7 +46,7 @@ loaded "Temp manager"
 # Change permissions for some dirs so all users can read/write
 sudo chmod -R a+rw $P_ROOT/build
 sudo chmod -R a+rw $P_ROOT/out
-sudo chmod -R a+rw $P_ROOT/internal/pkgbuild
+#sudo chmod -R a+rw $P_ROOT/internal/pkgbuild
 
 # We need build lock function so dev/user cant compile 2 diff pkg's at the same time
 # Would be ok in non-docker env but issue handler may kill lock file if error happens ( so lets run it here )
@@ -96,6 +97,18 @@ source $P_ROOT/build/toolset/shell/modules/pkg_clean.sh
 loaded "Pkg cleaner"
 
 # Feed docker instructions for setup
+if [ "${P_ARCH}" = "aarch64" ]; then
+    message "Docker - ARM64"
+    export DOCKER_IMAGE_NAME="hilledkinged/evolinx:aarch64"
+
+    export DOCKER_PKG="${DOCKER_AARCH64_PKG}"
+    export DOCKER_PKG_KDE="${DOCKER_AARCH64_PKG}"
+else
+    message "Docker - AMD64"
+    export DOCKER_PKG="${DOCKER_AMD64_PKG}"
+    export DOCKER_PKG_KDE="${DOCKER_AMD64_PKG}"
+fi
+
 loading "Docker functions..."
 source $P_ROOT/build/toolset/shell/modules/docker_modules.sh
 loaded "Docker functions"

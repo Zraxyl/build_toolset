@@ -115,9 +115,9 @@ make_plasma_clean_iso () {
 
 installer_defaults() {
     # Autostart
-    as_root mkdir -p $ISO_ROOT/rootfs/system/home/evolinx/.config/autostart
-    as_root chmod -R 777 $ISO_ROOT/rootfs/system/home/evolinx/.config
-    as_root cp $ISO_ROOT/rootfs/system/usr/share/applications/org.kde.konsole.desktop $ISO_ROOT/rootfs/system/home/evolinx/.config/autostart/
+    as_root mkdir -p $ISO_ROOT/rootfs/system/home/${DISTRO_NAME}/.config/autostart
+    as_root chmod -R 777 $ISO_ROOT/rootfs/system/home/${DISTRO_NAME}/.config
+    as_root cp $ISO_ROOT/rootfs/system/usr/share/applications/org.kde.konsole.desktop $ISO_ROOT/rootfs/system/home/${DISTRO_NAME}/.config/autostart/
 
     # Theme
     # exec_rootfs lookandfeeltool -a org.kde.breezedark

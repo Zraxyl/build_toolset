@@ -1,8 +1,8 @@
 # Tools for developemnt
 
-* This is basic toolset of tools for Evolix development environment. Sets up everything from pkg management to source clones ( basic env for all new devs )
+* This is basic toolset of tools for Zraxyl development environment.
 
-# Packages needed to work with these scriptlets
+# Packages needed to work with the scriptlets
 
 ```
 ## modules deps ( docker, mkiso and builder )
@@ -18,7 +18,7 @@ $ bottle -Syu --needed make cmake docker ninja meson llvm clang bash libisofs li
 ```
 $ ln -sf tools/envsetup.sh envsetup
 
-$ ./envsetup -h
+$ ./envsetup --help
 ```
 
 4. Now youre ready to start adding/changing packages

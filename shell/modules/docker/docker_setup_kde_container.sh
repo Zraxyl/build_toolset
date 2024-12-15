@@ -37,10 +37,14 @@ docker_setup_kde() {
     # Import the exported container for kde
     docker_import_kde
 
+    # Start container
     docker_start_container $DOCKER_KDE_CONTAINER_NAME
 
     # Run pre setup for kde container
     docker_kde_presetup
+
+    # Update container
+    docker_update_kde
 }
 
 # Install required packages for kde container

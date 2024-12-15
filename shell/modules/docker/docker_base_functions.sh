@@ -103,7 +103,11 @@ docker_copy_pkgmanager_conf() {
     if [ "${ARCH}" = "x86_64"  ]; then
         # AMD64 config
         if [ "${USE_STAGING}" = "yes" ]; then
-            docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/staging_amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+	    if [ "${USE_STAGING_LOCAL}" = "yes" ]; then
+		docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/staging_local_amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+	    else
+            	docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/staging_amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
+	    fi
         else
             docker_run_cmd $1 "cp -f /home/developer/$TOOL_MAIN_NAME/build/docker/developing/${PACKAGE_MANAGER}/stable_amd64_${PACKAGE_MANAGER}.conf /etc/${PACKAGE_MANAGER}.conf"
         fi

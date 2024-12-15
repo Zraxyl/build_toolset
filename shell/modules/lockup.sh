@@ -24,7 +24,7 @@ check_and_setup_lock() {
         fi
     else
         # Lock the build system
-        lock_drunk
+        lock_builder
     fi
 }
 
@@ -43,6 +43,6 @@ show_tmp_status() {
     msg_spacer
 }
 
-lock_drunk() {
+lock_builder() {
     touch $TOOL_TEMP/.builder_locked
 }

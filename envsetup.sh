@@ -10,7 +10,7 @@ set -e -o pipefail -u
 if [ -f build/toolset/envsetup.sh ];then
     cd "$(dirname "$0")"
 else
-    echo "Dont run this in other places than its symlink root dir ( Only in a project root dir that has folder called setup )!!!"
+    echo "Dont run this in other places than its symlink root dir ( Only in a project root dir that has folder called build/toolset )!!!"
     exit 1
 fi
 

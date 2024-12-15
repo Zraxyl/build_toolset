@@ -29,7 +29,7 @@ install_dep() {
     if [ "${P_ARCH}" = "aarch64" ]; then
         sudo bottle -Syu --needed --noconfirm --disable-download-timeout base-dev linux-headers $FULL_DEP_LIST
     else
-        sudo bottle -Syu --needed --noconfirm --disable-download-timeout base-dev linux $FULL_DEP_LIST
+        sudo bottle -Syu --needed --noconfirm --disable-download-timeout base-devel linux $FULL_DEP_LIST
     fi
 
     msg_spacer

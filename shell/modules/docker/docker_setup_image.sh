@@ -12,7 +12,7 @@ docker_image_check() {
         message "Doing image quality check"
 
         # Check for existing image download
-        if [ $(sudo docker image ls -a | grep -o hilledkinged/evolinx) = "hilledkinged/evolinx" ]; then
+        if [ "$(sudo docker image ls -a | grep -o hilledkinged/evolinx)" = "hilledkinged/evolinx" ]; then
             message "Image already pulled, skipping..."
         fi
     else

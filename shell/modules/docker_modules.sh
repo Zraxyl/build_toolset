@@ -2,17 +2,6 @@
 # Load all pieces of docker moudles here
 ##
 
-# Rewrite some exports as of beign arch dependent
-if [ "${P_ARCH}" = "aarch64" ]; then
-    export DOCKER_IMAGE_NAME="hilledkinged/evolinx:aarch64"
-
-    export DOCKER_PKG="${DOCKER_AARCH64_PKG}"
-    export DOCKER_PKG_KDE="${DOCKER_AARCH64_PKG}"
-else
-    export DOCKER_PKG="${DOCKER_AMD64_PKG}"
-    export DOCKER_PKG_KDE="${DOCKER_AMD64_PKG}"
-fi
-
 # Load global functions that are used by beelow modules
 source $P_ROOT/build/toolset/shell/modules/docker/docker_base_functions.sh
 loaded "    docker -> base functions"
