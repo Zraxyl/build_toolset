@@ -23,8 +23,9 @@ set_aarch64() {
 	if [ -f "$TOOL_TEMP/is_arch" ]; then
 		msg_debug "Already set to AArch64"
 	else
-		msg_debug "Arch set to AArch64"
+		msg_debug "Arch set to AArch64/arm64"
 		echo 'aarch64' > $TOOL_TEMP/is_arch
+		echo 'arm64' > $TOOL_TEMP/docker_arch
 	fi
 }
 
@@ -33,8 +34,9 @@ set_x86_64() {
 	if [ -f "$TOOL_TEMP/is_arch" ]; then
 		msg_debug "Already set to X86_64"
 	else
-		msg_debug "Arch set to X86_64"
+		msg_debug "Arch set to X86_64/AMD64"
 		echo 'x86_64' > $TOOL_TEMP/is_arch
+		echo 'amd64' > $TOOL_TEMP/docker_arch
 	fi
 }
 

@@ -4,40 +4,44 @@
 ##
 
 docker_check_health() {
+    message "Starting docker health check"
+    # Remove docker check as we need to recheck docker health
+    rm -f $TOOL_CHECKS/docker_ready
+
     # Check image health
     # 1: If missing then pull
     # 2: If exists then its all good
-    msg_debug "Docker image health check"
+    message "Docker image health check"
     docker_image_check
 
     # Check base container health
     # 1: If missing then make one
     # 2: If exists then update it
-    msg_debug "Docker base container check"
+    message "Docker base container check"
     docker_check_base_container
 
     # Check kde main container health ( not for build usage)
     # 1: If missing then make one
     # 2: If exists then update it
-    msg_debug "Docker kde container check"
+    message "Docker kde container check"
     docker_check_kde_container
 
     # Check build container health
     # 1: If missing then make one
     # 2: If exists then update it
     # 3: If build is done then trigger base update and re-create build container
-    msg_debug "Docker build container check"
+    message "Docker build container check"
     docker_check_build_container
 
     # Check kde build container health
     # 1: If missing then make one
     # 2: If exists then update it
     # 3: If build is done then trigger kde update and re-create kde build container
-    msg_debug "Docker kde build container check"
+    message "Docker kde build container check"
     docker_check_build_container_kde
 
-    msg_debug "Health check passed"
     echo 1 > $TOOL_CHECKS/docker_ready
+    message "Health check passed"
 }
 
 docker_shell_session() {

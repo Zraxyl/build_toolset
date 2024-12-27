@@ -66,7 +66,7 @@ while (("$#" >= 1)); do
         -dr|--docker-reset) docker_reset_build && message "Docker reset done, exiting" && clean_tmp ;;
         --imgsys-amd64) docker_imgsys_amd64 && clean_tmp;;
         --imgsys-arm64) docker_imgsys_arm64 && clean_tmp;;
-        --docker-debug) docker_check_health && clean_tmp ;;
+        --docker-check) docker_check_health && clean_tmp ;;
         *) export PKG_LIST+=("${1}");;
         -*) unknown_option ${1};;
         --*) unknown_option ${1};;

@@ -69,7 +69,9 @@ export INSTALLER_PKG="base-system nano dracut wireless-tools base-install-script
 # Docker related ( Defaults )
 ##
 
-export DOCKER_IMAGE_NAME="hilledkinged/evolinx"
+export DOCKER_IMAGE_NAME="zraxyl/zraxyl"
+export DOCKER_IMAGE_ARCH="none"
+
 export DOCKER_IMAGE_NAME_TEMP="zraxyl/temp_img"
 export DOCKER_BASE_CONTAINER_NAME=zraxyl_base
 export DOCKER_KDE_CONTAINER_NAME=zraxyl_kde

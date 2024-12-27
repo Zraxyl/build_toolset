@@ -74,9 +74,11 @@ loaded "Main functions"
 source $P_ROOT/build/toolset/shell/modules/arch_manager.sh
 if [ -f $TOOL_TEMP/is_arch ]; then
     export P_ARCH=$(get_target_arch) # As we may be runned inside container by -d flag
+    export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
 else # Otherwise set up arch flags
     set_arch
     export P_ARCH=$(get_target_arch)
+    export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
 fi
 loaded "Arch manager"
 
@@ -99,8 +101,6 @@ loaded "Pkg cleaner"
 # Feed docker instructions for setup
 if [ "${P_ARCH}" = "aarch64" ]; then
     message "Docker - ARM64"
-    export DOCKER_IMAGE_NAME="hilledkinged/evolinx:aarch64"
-
     export DOCKER_PKG="${DOCKER_AARCH64_PKG}"
     export DOCKER_PKG_KDE="${DOCKER_AARCH64_PKG}"
 else

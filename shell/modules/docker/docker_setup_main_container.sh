@@ -1,12 +1,12 @@
 docker_check_base_container() {
     sleep 1
-    export CHECKIT4=$(sudo docker container ls -a | grep -wo hilledkinged/evolinx)
+    export CHECKIT4=$(sudo docker container ls -a | grep -wo ${DOCKER_IMAGE_NAME})
 
     if [ -z ${CHECKIT4} ]; then
         CHECKIT="empty"
     fi
 
-    if [ "${CHECKIT4}" = "hilledkinged/evolinx" ]; then
+    if [ "${CHECKIT4}" = "${DOCKER_IMAGE_NAME}" ]; then
         message "Base container already made"
     else
         message "base container seems to be missing, so lets make it"
@@ -40,7 +40,7 @@ docker_base_container_sysedit() {
 
     # Also upgrade base system before installing new stuff
     docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} -Syy"
-    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} -Syu --noconfirm --disable-download-timeout"
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} -Syu --noconfirm --disable-download-timeout --overwrite=*"
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
 
@@ -70,7 +70,7 @@ docker_create_base_container() {
     --tty \
     -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
     -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
-    ${DOCKER_IMAGE_NAME} /bin/bash
+    ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} /bin/bash
     message "Base container created"
 }
 
@@ -80,7 +80,7 @@ docker_base_update() {
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
 
-    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} -Syu --needed --noconfirm --disable-download-timeout"
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} -Syu --needed --noconfirm --disable-download-timeout --overwrite=*"
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
 }
