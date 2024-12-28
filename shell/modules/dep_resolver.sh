@@ -22,7 +22,7 @@ install_dep() {
 
     # Lets do a hack here with lock
     # TODO: Somehow check if pkg got installed and if not then exit and clear tmp ( otherwise it just errors and dosent remve lock )
-    rm -f $TOOL_TEMP/.builder_locked
+    as_user_del $TOOL_TEMP/.builder_locked
     msg_spacer
 
     # HACK: AMD64 port always needs linux package as it has headers where aarch64 port has linux-headers package

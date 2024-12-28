@@ -29,7 +29,7 @@ clean_pkg() {
     fi
 
     # Cleanup everything
-    rm -rf pkg/ src/ *pkg* *xz* *tar.gz *tar.bz2 *.zip */ *tgz *tar.zst *sign* *sig* *asc*
+    as_user_del pkg/ src/ *pkg* *xz* *tar.gz *tar.bz2 *.zip */ *tgz *tar.zst *sign* *sig* *asc*
 
     message "$PKG_NAME has been cleaned"
 

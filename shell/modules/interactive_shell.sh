@@ -54,7 +54,7 @@ itshell_health_check() {
 itshell_shell() {
     # Make sure we remove reload tmp file if it exists
     if [ -f "${TOOL_OUT}/.ITSHELL_RELOAD" ]; then
-        rm -f "${TOOL_OUT}/.ITSHELL_RELOAD"
+        as_user_del "${TOOL_OUT}/.ITSHELL_RELOAD"
     fi
 
     subshell=true bash --rcfile ${DEV_FOLDER}/base/bashrc
@@ -68,12 +68,12 @@ itshell_spawn_interactive_shell() {
     trap - ERR
     set +e
 
-    rm -f ${TOOL_OUT}/.ITSHELL_RELOAD
+    as_user_del ${TOOL_OUT}/.ITSHELL_RELOAD
 
     # Now spawn new bash shell with new bashrc that has aliases in place
     itshell_shell
 
-    rm -f ${TOOL_OUT}/.ITSHELL_RELOAD
+    as_user_del ${TOOL_OUT}/.ITSHELL_RELOAD
 
     set -e
 }

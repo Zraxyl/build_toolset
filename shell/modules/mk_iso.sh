@@ -26,7 +26,7 @@ loaded "    ISO -> Plasma module"
 # This will be a list cli ISO variant of functions to run in menu
 iso_variant_selector() {
     # Lets remove compile lock as its not useful here
-    rm -f $TOOL_TEMP/.builder_locked
+    as_user_del $TOOL_TEMP/.builder_locked
 
     prepare_iso_env
 

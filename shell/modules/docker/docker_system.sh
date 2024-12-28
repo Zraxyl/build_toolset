@@ -6,7 +6,7 @@
 docker_check_health() {
     message "Starting docker health check"
     # Remove docker check as we need to recheck docker health
-    rm -f $TOOL_CHECKS/docker_ready
+    as_user_del $TOOL_CHECKS/docker_ready
 
     # Check image health
     # 1: If missing then pull

@@ -10,12 +10,13 @@ source $P_ROOT/build/toolset/shell/modules/msg_types.sh
 
 ## ------------------------------------------------------------
 # Here we need to notify dev that we have these options enabled
-##
+## DEPRECATED: REMOVE WHEN READY
 if [ "${USE_STAGING}" = "yes" ]; then
     export BRANCH_TYPE_IS="STAGING"
 else
     export BRANCH_TYPE_IS="STABLE"
 fi
+
 msg_spacer
 sel_option "ENVSETUP -> ${TOOL_VERSION_CODE}"
 sel_option "T-SYSTEM -> ${TOOL_MAIN_NAME}"
@@ -40,6 +41,7 @@ fi
 # If we add clean tmp too then docker env wont have args that were passed here before
 # So only clean if error is catched by error-handler
 source $P_ROOT/build/toolset/shell/modules/tmp_main.sh
+force_clean_tmp
 create_tmp
 loaded "Temp manager"
 

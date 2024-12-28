@@ -25,7 +25,7 @@ build_pkg() {
         PKG_NAME=$(basename "${PKG_LIST[p]}")
 
         # Update ic_compiling ( used for lock function to notify user what is WIP currently )
-        rm -f $TOOL_TEMP/builds # remove it even if it dosent exist
+        as_user_del $TOOL_TEMP/builds # remove it even if it dosent exist
         echo "IS_COMPILING=${PKG_NAME}" > $TOOL_TEMP/builds
 
         # Just in case if no -f / --no-extract has been specified
@@ -79,7 +79,7 @@ build_pkg() {
         set +e
 
         # Remove existing *pkg* file
-        rm -f ${PKG_NAME}-*.pkg.tar.gz
+        as_user_del ${PKG_NAME}-*.pkg.tar.gz
 
         # Start the compiler for pkg
         # ( LC_CTYPE export is needed for bsdtar, without it we get error's about it for some tarballs )
@@ -88,7 +88,7 @@ build_pkg() {
 
             # Now as the build finished we move our new PKGBUILD here
             cp -f PKGBUILD_NEW PKGBUILD
-            rm -f PKGBUILD_NEW
+            as_user_del PKGBUILD_NEW
         else
             LC_CTYPE=en_US.UTF-8 makepkg $MAKEPKG_EXTRA_ARG
         fi
@@ -155,7 +155,7 @@ build_pkg_docker() {
     for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
 
     msg_debug "Removing some temporary flags"
-    rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
+    as_user_del $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
 
     PKG_NAME=$(basename "${PKG_LIST[p]}")
     msg_debug "List of packages to build: ${PKG_LIST}"
@@ -186,7 +186,7 @@ build_pkg_docker() {
         docker_build_base_reset
     fi
 
-    rm -f $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
+    as_user_del $TOOL_TEMP/builds $TOOL_TEMP/.builder_locked
 
     done
 

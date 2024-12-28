@@ -12,28 +12,28 @@ make_cli_rootfs() {
     as_root $STRAP -G system/ ${CLI_PKG}
 
     # Now clean up some firmware files that wont be needed for installation in x86_64 env
-    as_root rm -rf $ISO_ROOT/rootfs/system/lib/firmware/{netronome,qcom,mellanox,qca}
+    as_root_del $ISO_ROOT/rootfs/system/lib/firmware/{netronome,qcom,mellanox,qca}
 
     set +e
 
     # Now clean up some firmware files that wont be needed for installation in x86_64 env
-    as_root rm -rf $ISO_ROOT/rootfs/system/lib/firmware/{netronome,qcom,mellanox,qca}
+    as_root_del $ISO_ROOT/rootfs/system/lib/firmware/{netronome,qcom,mellanox,qca}
 
     # Same for other things
-    as_root rm -rf $ISO_ROOT/rootfs/system/var/cache/bottle/pkg/*
-    as_root rm -rf $ISO_ROOT/rootfs/system/include/
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/include
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/scr
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/libexec/gcc
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/lib*.a
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/lib*.la
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/*/lib*.a
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib*/*/lib*.la
-    as_root rm -rf $ISO_ROOT/rootfs/system/usr/lib/lib*.a
+    as_root_del $ISO_ROOT/rootfs/system/var/cache/bottle/pkg/*
+    as_root_del $ISO_ROOT/rootfs/system/include/
+    as_root_del $ISO_ROOT/rootfs/system/usr/include
+    as_root_del $ISO_ROOT/rootfs/system/usr/scr
+    as_root_del $ISO_ROOT/rootfs/system/usr/libexec/gcc
+    as_root_del $ISO_ROOT/rootfs/system/usr/lib*/lib*.a
+    as_root_del $ISO_ROOT/rootfs/system/usr/lib*/lib*.la
+    as_root_del $ISO_ROOT/rootfs/system/usr/lib*/*/lib*.a
+    as_root_del $ISO_ROOT/rootfs/system/usr/lib*/*/lib*.la
+    as_root_del $ISO_ROOT/rootfs/system/usr/lib/lib*.a
 
     # Firmware
     as_root mv $ISO_ROOT/rootfs/system/lib/firmware/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system
-    as_root rm -rf $ISO_ROOT/rootfs/system/lib/firmware/*
+    as_root_del $ISO_ROOT/rootfs/system/lib/firmware/*
     as_root mv $ISO_ROOT/rootfs/system/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system/lib/firmware/
 
     # strip
@@ -56,12 +56,10 @@ make_cli_dirty_iso () {
         make_cli_rootfs
         set -e
         if [ ! -f $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME ]; then
-            # Multiple checks as umount dosent wanna play with us that well for some cases
             rootfs_umount
-            rootfs_umount
-            rootfs_umount
+
             # Lets clean and restart the proccess ( loop until done )
-            as_root rm -rf $ISO_ROOT/rootfs/system
+            as_root_del $ISO_ROOT/rootfs/system
 
             make_cli_rootfs
         fi
@@ -104,7 +102,7 @@ make_cli_clean_iso () {
         rootfs_umount
         rootfs_umount
         # Lets clean and restart the proccess ( loop until done )
-        as_root rm -rf $ISO_ROOT/rootfs/system
+        as_root_del $ISO_ROOT/rootfs/system
         sleep 2
         make_cli_rootfs
     fi

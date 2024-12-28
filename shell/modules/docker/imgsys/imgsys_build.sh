@@ -10,7 +10,7 @@ imgsys_make_env () {
 
 imgsys_cleanup_env() {
     message "Cleaning up environment"
-    sudo rm -rf ${IMGSYS_WRK}/rootfs
+    as_root_del ${IMGSYS_WRK}/rootfs
 }
 
 imgsys_strap_base() {

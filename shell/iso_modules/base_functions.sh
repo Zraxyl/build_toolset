@@ -20,7 +20,7 @@ full_clean() {
     rootfs_umount
     rootfs_umount
 
-    as_root rm -rf $ISO_ROOT
+    as_root_del $ISO_ROOT
 }
 
 # Make base structure of iso
@@ -84,26 +84,25 @@ make_base_iso() {
     mkdir -pv LiveOS kernel
 
     as_root cp -fv $ISO_ROOT/rootfs/system/boot/vmlinuz-$DISTRO_NAME $ISO_ROOT/iso/kernel/vmlinuz
-    as_root ls -la $ISO_ROOT/iso/kernel/
 }
 
 rootfs_umount() {
-    if [ -f $ISO_ROOT/rootfs/system/sys/ ]; then
-        message Unmounting $ISO_ROOT/rootfs/system/sys/
+    if [ -d $ISO_ROOT/rootfs/system/sys ]; then
+        message Unmounting $ISO_ROOT/rootfs/system/sys
         as_root umount -f -l $ISO_ROOT/rootfs/system/sys
-        sleep 4
+        sleep 2
     fi
 
-    if [ -f $ISO_ROOT/rootfs/system/proc/ ]; then
-        message Unmounting $ISO_ROOT/rootfs/system/proc/
+    if [ -d $ISO_ROOT/rootfs/system/proc ]; then
+        message Unmounting $ISO_ROOT/rootfs/system/proc
         as_root umount -f -l $ISO_ROOT/rootfs/system/proc
-        sleep 4
+        sleep 2
     fi
 
-    if [ -f $ISO_ROOT/rootfs/system/dev/ ]; then
-        message Unmounting $ISO_ROOT/rootfs/system/dev/
+    if [ -d $ISO_ROOT/rootfs/system/dev ]; then
+        message Unmounting $ISO_ROOT/rootfs/system/dev
         as_root umount -f -l $ISO_ROOT/rootfs/system/dev
-        sleep 4
+        sleep 2
     fi
 }
 
@@ -111,7 +110,7 @@ rootfs_umount() {
 make_iso_squashfs() {
     # Even for dirty we will remake the squashfs as of possible intended changes
     message Making final LiveOS squashfs from rootfs
-    rm -f $ISO_ROOT/iso/LiveOS/squashfs.img
+    as_user_del $ISO_ROOT/iso/LiveOS/squashfs.img
 
     as_root mksquashfs $ISO_ROOT/rootfs/system $ISO_ROOT/iso/LiveOS/squashfs.img -wildcards -e 'dev/*' -e 'proc/*' -e 'sys/*'
 }
@@ -178,7 +177,7 @@ make_efi() {
 generate_iso() {
     message Creating bootable iso image
 
-    as_root rm -f $P_ROOT/$DISTRO_NAME.iso
+    as_root_del $P_ROOT/$DISTRO_NAME.iso
 
     as_root xorriso -as mkisofs \
     -r -V "installer" \

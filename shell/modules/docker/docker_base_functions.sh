@@ -44,7 +44,7 @@ docker_export() {
     mkdir -p $TOOL_TEMP/docker_container
 
     message "Exporting docker container $1 for $2"
-    sudo rm -f "$TOOL_TEMP/docker_container/$2.tar"
+    as_root_del "$TOOL_TEMP/docker_container/$2.tar"
 
     sleep 2
 

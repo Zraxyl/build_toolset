@@ -58,17 +58,19 @@ itshell_pkgedit() {
         export PKGEDIT_LIST+="${PKG_PATH}/PKGBUILD "
     done
 
-    # Run them all with kate
-    kate ${PKGEDIT_LIST}
+    # Run them all with text editor
+    ${TEXT_EDITOR} ${PKGEDIT_LIST}
 }
 
 itshell_reload() {
     # This subfunction will reload all of the toolset modules in the background + restarts the shell
 
     if [ -f ${TOOL_OUT}/.ITSHELL_RELOAD ]; then
-        rm -f ${TOOL_OUT}/.ITSHELL_RELOAD
+        as_user_del ${TOOL_OUT}/.ITSHELL_RELOAD
         itshell_spawn_interactive_shell
     fi
 
+    # Here we wanna be hold on exit so when user quits another subshell
+    # then all the ones that are on hold will eventually exit
     exit &> /dev/null
 }

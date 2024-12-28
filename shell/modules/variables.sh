@@ -15,6 +15,11 @@ export ISO_ROOT=$TOOL_OUT/system_iso
 export TOOL_USER=$(whoami)
 export TOOL_MAIN_NAME=ZRAXYL
 
+##
+# DEVELOPER TOOLS ( DEFAULT )
+# - Text Editor = kate
+##
+export TEXT_EDITOR="$(which kate)"
 
 ##
 # Repositroy related
