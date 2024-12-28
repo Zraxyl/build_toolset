@@ -64,9 +64,9 @@ imgsys_docker_health_check() {
 imgsys_docker_cleanup() {
     # Remove imgsys container as we dont need it anymore
     sudo docker container rm -f ${DOCKER_IMGSYS_CONTAINER_NAME}
+    message "Container removed"
 
     # Here we need to delete main evolinx image to import new one later on
     sudo docker rmi ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} -f
-
-    message "Existing image removed"
+    message "Image removed"
 }

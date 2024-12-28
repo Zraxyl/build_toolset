@@ -18,8 +18,6 @@ imgsys_strap_base() {
 }
 
 imgsys_rootfs_to_image() {
-    imgsys_docker_cleanup
-
     cd ${IMGSYS_WRK} && sudo tar -C rootfs -c . | sudo docker import - ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
 }
 
@@ -42,6 +40,10 @@ imgsys_build_base() {
     # strap new rootfs
     message "Strapping new rootfs base"
     imgsys_strap_base
+
+    # Remove previously pulled image
+    message "Preparing to remove old image and container"
+    imgsys_docker_cleanup
 
     # import tarball to image
     message "Importing final rootfs as image"
