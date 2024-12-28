@@ -2,7 +2,7 @@
 # Here we will export all variables
 ##
 
-export TOOL_VERSION_CODE=1005
+export TOOL_VERSION_CODE=1006
 
 export TOOL_BUILD=false
 export TOOL_CLEAN=false
@@ -15,7 +15,17 @@ export ISO_ROOT=$TOOL_OUT/system_iso
 export TOOL_USER=$(whoami)
 export TOOL_MAIN_NAME=ZRAXYL
 
+
+##
+# Repositroy related
+##
 export USE_STAGING=yes
+
+if [ $USE_STAGING = "yes" ]; then
+    export REPO_TYPE=staging
+else
+    export REPO_TYPE=stable
+fi
 
 ##
 # Failsafe incase of error
@@ -77,6 +87,7 @@ export DOCKER_BASE_CONTAINER_NAME=zraxyl_base
 export DOCKER_KDE_CONTAINER_NAME=zraxyl_kde
 export DOCKER_BUILD_CONTAINER_NAME=zraxyl_build
 export DOCKER_BUILD_CONTAINER_NAME_KDE=zraxyl_build_kde
+export DOCKER_IMGSYS_CONTAINER_NAME=zraxyl_imgsys
 export DOCKER_CONTAINER_NAME=none
 export DOCKER_CONTAINER_KDE=false
 export DOCKER_USER_FOLDER=/home/developer
@@ -88,6 +99,11 @@ export DOCKER_AMD64_PKG_KDE="ceph qt5 qt6 cmake meson ninja linux"
 # AArch64
 export DOCKER_AARCH64_PKG="sudo nano mpfr mpc m4 git grep gawk cmake meson ninja file make automake texinfo autoconf linux-headers"
 export DOCKER_AARCH64_PKG_KDE="cmake meson ninja"
+
+##
+# Imgsys related
+##
+export IMGSYS_WRK=$TOOL_OUT/imgsys
 
 ##
 # Developers friend

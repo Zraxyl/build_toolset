@@ -62,11 +62,13 @@ while (("$#" >= 1)); do
             export TOOL_DOCKER=true
             echo true > $TOOL_TEMP/is_docker
         fi ;;
+        --docker-check) docker_check_health && clean_tmp ;;
         --docker-shell) docker_shell_session ;;
         -dr|--docker-reset) docker_reset_build && message "Docker reset done, exiting" && clean_tmp ;;
-        --imgsys-amd64) docker_imgsys_amd64 && clean_tmp;;
-        --imgsys-arm64) docker_imgsys_arm64 && clean_tmp;;
-        --docker-check) docker_check_health && clean_tmp ;;
+        # Docker image creator + pusher
+        --imgsys-push) echo true > $TOOL_TEMP/imgsys_push ;;
+        --imgsys-amd64) imgsys_build && clean_tmp;;
+        --imgsys-arm64) msg_error "Imgsys dosent support arm64 builds yet" && clean_tmp;;
         *) export PKG_LIST+=("${1}");;
         -*) unknown_option ${1};;
         --*) unknown_option ${1};;

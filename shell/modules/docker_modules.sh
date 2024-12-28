@@ -6,10 +6,6 @@
 source $P_ROOT/build/toolset/shell/modules/docker/docker_base_functions.sh
 loaded "    docker -> base functions"
 
-# Add support to build docker images with imgsys toolset
-source $P_ROOT/build/toolset/shell/modules/docker/docker_imgsys.sh
-loaded "    docker -> imgsys support"
-
 # Load docker image setup module
 source $P_ROOT/build/toolset/shell/modules/docker/docker_setup_image.sh
 loaded "    docker -> image setup"
@@ -28,5 +24,12 @@ loaded "    docker -> kde build container setup"
 
 sleep 1
 
+source $P_ROOT/build/toolset/shell/modules/docker/imgsys/imgsys_base.sh
+loaded "    imgsys -> base functions"
+
+source $P_ROOT/build/toolset/shell/modules/docker/imgsys/imgsys_build.sh
+loaded "    imgsys -> build functions"
+
+sleep 1
 source $P_ROOT/build/toolset/shell/modules/docker/docker_system.sh
 loaded "    docker -> system"
