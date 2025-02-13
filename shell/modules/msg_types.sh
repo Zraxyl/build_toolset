@@ -37,7 +37,7 @@ if [ -f "$TOOL_TEMP/is_docker" ]; then
     message "Reloading modules in the background"
     loaded() {
         # As this function prints module loading then also lets sleep a bit so everything catches up in reality
-        sleep 0.1
+        sleep 0.01
     }
 
     loading() {
@@ -81,7 +81,10 @@ msg_spacer() {
 
 if [ "$SHOW_DEBUG" = "true" ]; then
     msg_debug() {
-        echo -e "${BLUE}[ DEBUG ]-> ${YELLOW}$@${WHITE}"
+        echo -e "${BLUE}[ DEBUG ] -> ${YELLOW}$@${WHITE}"
+
+        # Also log EVERYTHING to temp ( will be wiped anyway in next startup or end )
+        echo -e "[ DEBUG ] -> ${@}" &>> ${TOOL_TEMP}/toolset_debug.log
     }
 else
     msg_debug() {

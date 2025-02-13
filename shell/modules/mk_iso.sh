@@ -9,20 +9,6 @@ else
 	msg_debug Arch is OK
 fi
 
-loading "ISO modules"
-
-# Load common functions
-source $P_ROOT/build/toolset/shell/iso_modules/base_functions.sh
-loaded "    ISO -> Base functions"
-
-# Load modules for iso creator
-source $P_ROOT/build/toolset/shell/iso_modules/cli_main.sh
-loaded "    ISO -> Main functions"
-
-# Load modules for gui installer
-source $P_ROOT/build/toolset/shell/iso_modules/gui_installer.sh
-loaded "    ISO -> Plasma module"
-
 # This will be a list cli ISO variant of functions to run in menu
 iso_variant_selector() {
     # Lets remove compile lock as its not useful here
@@ -51,8 +37,6 @@ iso_variant_selector() {
     $HEIGHT $WIDTH $CHOICE_HEIGHT \
     "${OPTIONS[@]}" \
     2>&1 >/dev/tty)
-
-    clear
 
     case $CHOICE in
         1) cli_menu_selection ;;
@@ -87,8 +71,6 @@ cli_menu_selection() {
     $HEIGHT $WIDTH $CHOICE_HEIGHT \
     "${OPTIONS[@]}" \
     2>&1 >/dev/tty)
-
-    clear
 
     case $CHOICE in
         1) make_cli_clean_iso ;;
@@ -126,8 +108,6 @@ gui_menu_selection() {
     $HEIGHT $WIDTH $CHOICE_HEIGHT \
     "${OPTIONS[@]}" \
     2>&1 >/dev/tty)
-
-    clear
 
     case $CHOICE in
         1) make_plasma_clean_iso ;;

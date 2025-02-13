@@ -31,9 +31,7 @@ unset BRANCH_TYPE_IS
 loaded "Message types"
 
 # Check for root user before making tmp dir's
-if [[ $EUID -ne 0 ]]; then
-        msg_debug "User isn't root, thats good"
-    else
+if [[ ! $EUID -ne 0 ]]; then
         msg_error "User is root and this isn't allowed"
 fi
 
@@ -82,23 +80,28 @@ else # Otherwise set up arch flags
     export P_ARCH=$(get_target_arch)
     export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
 fi
+export ARCH=$(cat $TOOL_TEMP/is_arch)
 loaded "Arch manager"
+
+# Load docker support modules
+source $P_ROOT/build/toolset/shell/docker/docker_common.sh
+loaded "Docker support"
 
 # Load up package src location finder
 source $P_ROOT/build/toolset/shell/modules/pkg_location.sh
-loaded "Pkg location"
+loaded "PKG location"
 
 # Load up dependency resolver
 source $P_ROOT/build/toolset/shell/modules/dep_resolver.sh
-loaded "Pkg resolver"
+loaded "PKG resolver"
 
 # Feed our script how to build pkg's
 source $P_ROOT/build/toolset/shell/modules/pkg_build.sh
-loaded "Pkg builder"
+loaded "PKG builder"
 
 # Feed it again to clean leftovers on pkg's
 source $P_ROOT/build/toolset/shell/modules/pkg_clean.sh
-loaded "Pkg cleaner"
+loaded "PKG cleaner"
 
 # Feed docker instructions for setup
 if [ "${P_ARCH}" = "aarch64" ]; then
@@ -111,16 +114,31 @@ else
     export DOCKER_PKG_KDE="${DOCKER_AMD64_PKG}"
 fi
 
-loading "Docker functions..."
+loading "PKG Docker functions..."
 source $P_ROOT/build/toolset/shell/modules/docker_modules.sh
-loaded "Docker functions"
+loaded "PKG Docker functions"
 
 loading "Repo update system functions"
 source $P_ROOT/build/toolset/shell/modules/repo_modules.sh
 loaded "Repo update system functions"
 
-# Feed the scriptlet main arch
-export ARCH=$(cat $TOOL_TEMP/is_arch)
+loading "ISO modules"
+
+# Load docker functions
+source $P_ROOT/build/toolset/shell/iso_modules/docker_support.sh
+loaded "    ISO -> docker functions"
+
+# Load common functions
+source $P_ROOT/build/toolset/shell/iso_modules/base_functions.sh
+loaded "    ISO -> Base functions"
+
+# Load modules for iso creator
+source $P_ROOT/build/toolset/shell/iso_modules/cli_main.sh
+loaded "    ISO -> Main functions"
+
+# Load modules for gui installer
+source $P_ROOT/build/toolset/shell/iso_modules/gui_installer.sh
+loaded "    ISO -> Plasma module"
 
 # Feed mkiso creator module
 source $P_ROOT/build/toolset/shell/modules/mk_iso.sh

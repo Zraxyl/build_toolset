@@ -45,9 +45,9 @@ while (("$#" >= 1)); do
         --shell) itshell_spawn_interactive_shell && clean_tmp;;
         --kde) echo "${DOCKER_BUILD_CONTAINER_NAME_KDE}" > $TOOL_TEMP/docker001;;
         --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001;;
-        --mkiso) export intended && iso_variant_selector;;
-        --mkiso-clean-cli) intended && make_cli_clean_iso;;
-        --mkiso-plasma-clean-cli) intended && make_plasma_clean_iso;; # Create LiveOS env with plasma desktop
+        --mkiso) export intended && iso_build_request dialog;;
+        --mkiso-clean-cli) intended && iso_build_request cli;;
+        --mkiso-plasma-clean-cli) intended && iso_build_request plasma;; # Create LiveOS env with plasma desktop
         --leave-tmp) echo 'true' > $TOOL_TEMP/.keep_tmp;; # This will be used by docker builder only ( keep away from help menu )
         -c|--clean) TOOL_CLEAN=true;;
         --repo-update) echo "WIP" ;;

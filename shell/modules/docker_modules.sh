@@ -7,8 +7,8 @@ source $P_ROOT/build/toolset/shell/modules/docker/docker_base_functions.sh
 loaded "    docker -> base functions"
 
 # Load docker image setup module
-source $P_ROOT/build/toolset/shell/modules/docker/docker_setup_image.sh
-loaded "    docker -> image setup"
+# source $P_ROOT/build/toolset/shell/modules/docker/docker_setup_image.sh
+# loaded "    docker -> image setup"
 
 source $P_ROOT/build/toolset/shell/modules/docker/docker_setup_main_container.sh
 loaded "    docker -> base container setup"

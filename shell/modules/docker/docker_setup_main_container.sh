@@ -46,7 +46,7 @@ docker_base_container_sysedit() {
 
     # Make sure that container has sudo installed with
     docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Sy ${DOCKER_PKG}"
-    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc systemd"
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc systemd"
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
 
