@@ -74,6 +74,10 @@ docker_create_container() {
     -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
     -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
     ${2} /bin/bash
+
+    msg_debug "List of current containers"
+    msg_debug "$(sudo docker container ls -a)"
+
     message "Cntainer has been made"
 }
 
@@ -91,13 +95,21 @@ docker_run_essentials() {
 docker_start_container() {
     msg_debug "Starting container: $1"
 
-    sudo docker start $1 &> /dev/null
+    if [ "$SHOW_DEBUG" = "true" ]; then
+        sudo docker start $1
+    else
+        sudo docker start $1 &> /dev/null
+    fi
 }
 
 # Stop target container
 docker_stop_container() {
     msg_debug "Stopping container: $1"
-    sudo docker stop $1 &> /dev/null
+    if [ "$SHOW_DEBUG" = "true" ]; then
+        sudo docker stop $1
+    else
+        sudo docker stop $1 &> /dev/null
+    fi
 }
 
 # Remove target container
