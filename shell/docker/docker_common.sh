@@ -88,7 +88,7 @@ docker_run_essentials() {
     msg_debug "DOCKER: Updating target ldconfig"
 
     # Update ldconfig cache
-    sudo docker exec --interactive --tty $1 su root -c ldconfig
+    sudo docker exec --interactive $1 su root -c ldconfig
 }
 
 # Start target container
@@ -129,7 +129,7 @@ docker_run_cmd() {
     docker_start_container $1
 
     msg_debug "DOCKER: $2"
-    sudo docker exec --interactive --tty $1 $2
+    sudo docker exec --interactive $1 $2
 }
 
 # Run command in target container as developer
@@ -137,7 +137,7 @@ docker_user_run_cmd() {
     docker_start_container $1
 
     msg_debug "DOCKER: $2"
-    sudo docker exec --interactive --tty $1 su developer -c "$2"
+    sudo docker exec --interactive $1 su developer -c "$2"
 }
 
 docker_container_sysedit() {
