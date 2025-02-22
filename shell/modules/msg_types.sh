@@ -84,7 +84,7 @@ if [ "$SHOW_DEBUG" = "true" ]; then
         echo -e "${BLUE}[ DEBUG ] -> ${YELLOW}$@${WHITE}"
 
         # Also log EVERYTHING to temp ( will be wiped anyway in next startup or end )
-        echo -e "[ DEBUG ] -> ${@}" &>> ${TOOL_TEMP}/toolset_debug.log
+        echo -e "[ DEBUG ] -> ${@}" &>> ${TOOL_OUT}/toolset_debug_$TOOL_TIME.log
     }
 else
     msg_debug() {

@@ -13,20 +13,50 @@ docker_start_service() {
     sudo systemctl restart docker
 }
 
+# Check weather we are  in supported or foreign distro
+docker_check_environment() {
+    # Lets export ID_LIKE from os-release for the check
+    export $(cat /etc/os-release | grep 'ID_LIKE=')
+    #export ID_LIKE=force_docker
+
+    # Usual check
+    if [ "$(grep -q docker /proc/1/cgroup)" = "docker" ]; then
+        message "Building target iso in native system"
+        msg_debug "Running in docker env so no more dockery stuff will be used"
+        export USE_DOCKER=false
+    elif [ "${ID_LIKE}" = "${TOOL_TARGET_DISTRO}" ]; then
+        message "Building target iso in native system"
+        export USE_DOCKER=false
+        msg_debug "ISO docker use is ${USE_DOCKER}"
+    else
+        message "ISO building will be done inside ${TOOL_TARGET_DISTRO} docker env"
+        msg_debug "ISO docker use is ${USE_DOCKER}"
+        export USE_DOCKER=true
+        export DOCKER_FORCED_OPTION="iso_docker_cli"
+    fi
+
+    # Now lets unset the ID_LIKE env
+    unset ID_LIKE
+}
+
 # Check if distro image has been pulled or not
 docker_image_check() {
-    docker_start_service
+    docker_check_environment
 
-    # Check for existing image download
-    if [[ "$(sudo docker image ls -a | grep -o ${DOCKER_IMAGE_NAME})" = "${DOCKER_IMAGE_NAME}" ]]; then
-        message "Base Image has already been pulled, skipping..."
-    else
-        message "Pulling base image"
-        if [ "${P_ARCH}" = "aarch64" ]; then
-            msg_error "${P_ARCH} docker image does not exist yet"
-            sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
+    if [ "${USE_DOCKER}" = "false" ]; then
+        docker_start_service
+
+        # Check for existing image download
+        if [[ "$(sudo docker image ls -a | grep -o ${DOCKER_IMAGE_NAME})" = "${DOCKER_IMAGE_NAME}" ]]; then
+            message "Base Image has already been pulled, skipping..."
         else
-            sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
+            message "Pulling base image"
+            if [ "${P_ARCH}" = "aarch64" ]; then
+                msg_error "${P_ARCH} docker image does not exist yet"
+                sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
+            else
+                sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
+            fi
         fi
     fi
 }
@@ -40,6 +70,7 @@ docker_create_container() {
     --name $1 \
     --volume $P_ROOT:$DOCKER_USER_FOLDER/$TOOL_MAIN_NAME \
     --tty \
+    --privileged \
     -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
     -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
     ${2} /bin/bash

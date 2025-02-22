@@ -25,6 +25,7 @@ docker_iso_checkup() {
 
     if [ ! "${CHECKIT1}" = "${ISO_CONTAINER_NAME}" ]; then
         docker_iso_setup_env
+        docker_iso_update
     else
         docker_start_container ${ISO_CONTAINER_NAME}
         docker_iso_update
@@ -33,9 +34,10 @@ docker_iso_checkup() {
 
 docker_iso_update() {
     # Install required packages for iso creation
-    docker_run_cmd ${ISO_CONTAINER_NAME} "bottle --noconfirm --disable-download-timeout -Syyu bash libisofs libisoburn base-install-scripts"
+    docker_run_cmd ${ISO_CONTAINER_NAME} "bottle --noconfirm --disable-download-timeout -Syyu bash libisofs libisoburn base-install-scripts linux-firmware sudo dracut"
 }
 
 docker_iso_build() {
-    docker_user_run_cmd ${ISO_CONTAINER_NAME} "cd ~/ZRAXYL && ./envsetup --mkiso"
+    # Now that we are ready then launch toolset in docker container for iso creation
+    docker_user_run_cmd ${ISO_CONTAINER_NAME} "cd ~/ZRAXYL && ./envsetup --mkiso-clean-cli"
 }

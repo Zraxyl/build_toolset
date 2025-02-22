@@ -16,6 +16,9 @@ export TOOL_USER=$(whoami)
 export TOOL_MAIN_NAME=ZRAXYL
 export TOOL_TARGET_DISTRO=zraxyl
 
+# Set toolset launch time
+export TOOL_TIME=$(date +"%Y_%d_%m_%I_%M")
+
 ##
 # DEVELOPER TOOLS ( DEFAULT )
 # - Text Editor = kate
@@ -91,7 +94,7 @@ export DOCKER_USER_FOLDER=/home/developer
 export DOCKER_FORCED_OPTION=none
 
 # X86_64
-export DOCKER_AMD64_PKG="sudo nano mpfr mpc base-devel m4 git grep gawk file linux"
+export DOCKER_AMD64_PKG="sudo nano mpfr mpc base-devel m4 git grep gawk file linux dialog"
 export DOCKER_AMD64_PKG_KDE="ceph qt5 qt6 cmake meson ninja linux"
 
 # AArch64
@@ -103,7 +106,7 @@ export DOCKER_AARCH64_PKG_KDE="cmake meson ninja"
 ##
 
 # Docker support
-export ISO_USE_DOCKER=none
+export USE_DOCKER=none
 export ISO_CONTAINER_NAME=zraxyl_iso_builder
 # Specific tool names
 export STRAP="base-strap"

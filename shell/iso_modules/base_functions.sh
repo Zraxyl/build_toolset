@@ -2,43 +2,23 @@
 # All the iso functions that are commonly used
 ##
 
-# Check weather we are building iso in supported or foreign distro
-iso_check_system() {
-    # Lets export ID_LIKE from os-release for the check
-    #export $(cat /etc/os-release | grep 'ID_LIKE=')
-    export ID_LIKE=force_docker
-
-    if [ "${ID_LIKE}" = "${TOOL_TARGET_DISTRO}" ]; then
-        message "Building target iso in native system"
-        export ISO_USE_DOCKER=false
-        msg_debug "ISO docker use is ${ISO_USE_DOCKER}"
-    else
-        message "ISO building will be done inside ${TOOL_TARGET_DISTRO} docker env"
-        export ISO_USE_DOCKER=true
-        export DOCKER_FORCED_OPTION=iso_docker_cli
-        msg_debug "ISO docker use is ${ISO_USE_DOCKER}"
-    fi
-
-    # Now lets unset the ID_LIKE env
-    unset ID_LIKE
-}
-
 # Wrapper function to perform system check and then do the requested build
 iso_build_request() {
-    iso_check_system
+    # CHECK 1: See if docker env is required
+    docker_check_environment
 
     # CHECK 2: Should docker be used.
-    if [ "${ISO_USE_DOCKER}" = "false" ]; then
+    if [ "${USE_DOCKER}" = "false" ]; then
         msg_debug "ISO wont be made in docker env"
-    elif [ "${ISO_USE_DOCKER}" = "true" ]; then
+    elif [ "${USE_DOCKER}" = "true" ]; then
         msg_debug "ISO will run pre-checkup docker stuff"
         docker_iso_checkup
-    elif [ "${ISO_USE_DOCKER}" = "none" ]; then
+    elif [ "${USE_DOCKER}" = "none" ]; then
         msg_debug "Well, I have no clue why or how"
         msg_error "Something went wrong in iso_cli_request function"
     fi
 
-    # Now lets pass the build request to proper functions
+    # CHECK 2: Now lets pass the build request to proper functions
     if [ "${DOCKER_FORCED_OPTION}" = "iso_docker_cli" ]; then
         # As we need to use docker then we will re-run this script with args inside container
         docker_iso_build
