@@ -139,7 +139,7 @@ docker_user_run_cmd() {
     docker_start_container $1
 
     msg_debug "DOCKER: $2"
-    sudo docker exec -u developer --tty --interactive $1 bash -c "$2"
+    sudo docker exec -u developer --interactive $1 bash -c "$2"
 }
 
 docker_container_sysedit() {
