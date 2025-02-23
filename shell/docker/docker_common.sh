@@ -73,7 +73,7 @@ docker_create_container() {
     --privileged \
     -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
     -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
-    ${2} /bin/bash
+    ${2} /usr/bin/bash
 
     msg_debug "List of current containers"
     msg_debug "$(sudo docker container ls -a)"
@@ -88,7 +88,9 @@ docker_run_essentials() {
     msg_debug "DOCKER: Updating target ldconfig"
 
     # Update ldconfig cache
-    sudo docker exec --interactive $1 su root -c ldconfig
+    set +e
+    sudo docker exec -u root --interactive $1 bash -c "ldconfig"
+    set -e
 }
 
 # Start target container
@@ -124,39 +126,43 @@ docker_remove_image() {
     sudo docker image rm -f $1
 }
 
-# Run command in target container as root
+# Run cmd in target container as root user
 docker_run_cmd() {
     docker_start_container $1
 
     msg_debug "DOCKER: $2"
-    sudo docker exec --interactive $1 $2
+    sudo docker exec -u root --interactive $1 bash -c "$2"
 }
 
-# Run command in target container as developer
+# Run cmd in target container as developer user
 docker_user_run_cmd() {
     docker_start_container $1
 
     msg_debug "DOCKER: $2"
-    sudo docker exec --interactive $1 su developer -c "$2"
+    sudo docker exec -u developer --tty --interactive $1 bash -c "$2"
 }
 
 docker_container_sysedit() {
+    # echo toor | openssl passwd -1 -stdin
+    export PASSWD='$1$/M2zf0R0$A21DEu1T5lucDorrkv3vQ0'
+
+    # Give root user passwd so su can be happy
+    docker_run_cmd ${1} "usermod --password ${PASSWD} root"
+
     # Reset pkg manager sync folder
     docker_run_cmd ${1} "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
 
-    export UNI_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
-
     # Add developer user ( used to build pkg's without root
-    docker_run_cmd ${1} "useradd developer -m -g wheel"
-
-    docker_copy_pkgmanager_conf ${1}
+    docker_run_cmd ${1} "useradd developer -G adm,wheel -d /home/developer -M -s /usr/bin/bash"
 
     # Give users passwd so su dosent whine about auth info issues
-    docker_run_cmd ${1} "usermod --password $UNI_PASSWORD root"
-    docker_run_cmd ${1} "usermod --password $UNI_PASSWORD developer"
+    docker_run_cmd ${1} "usermod --password ${PASSWD} developer"
 
     # Run Essentials before anything else
     docker_run_essentials $1
+
+    # Copy over required bottle conf
+    docker_copy_pkgmanager_conf ${1}
 
     # Perms fixes + ${PACKAGE_MANAGER} changes
     docker_run_cmd ${1} "bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/rootsys/developer.sh"
@@ -168,12 +174,14 @@ docker_container_sysedit() {
     # Rerun Essentials
     docker_run_essentials $1
 
+    # Copy over required bottle conf
     docker_copy_pkgmanager_conf ${1}
 
     # Make sure that container has sudo installed with
     docker_run_cmd ${1} "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Syy ${DOCKER_PKG}"
     docker_run_cmd ${1} "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc systemd"
 
+    # Copy over required bottle conf
     docker_copy_pkgmanager_conf ${1}
 
     docker_run_cmd ${1} "bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/sudo/fix_sudo.sh"

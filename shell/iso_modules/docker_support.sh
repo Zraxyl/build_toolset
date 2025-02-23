@@ -34,10 +34,10 @@ docker_iso_checkup() {
 
 docker_iso_update() {
     # Install required packages for iso creation
-    docker_run_cmd ${ISO_CONTAINER_NAME} "bottle --noconfirm --disable-download-timeout -Syyu bash libisofs libisoburn base-install-scripts linux-firmware sudo dracut"
+    docker_run_cmd ${ISO_CONTAINER_NAME} "bottle --needed --noconfirm --disable-download-timeout -Syyu bash libisofs libisoburn base-install-scripts linux-firmware sudo dracut"
 }
 
 docker_iso_build() {
     # Now that we are ready then launch toolset in docker container for iso creation
-    docker_user_run_cmd ${ISO_CONTAINER_NAME} "cd ~/ZRAXYL && ./envsetup --mkiso-clean-cli"
+    docker_user_run_cmd ${ISO_CONTAINER_NAME} 'cd ~/ZRAXYL && ./envsetup --mkiso-clean-cli'
 }
