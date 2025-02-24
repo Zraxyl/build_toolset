@@ -50,18 +50,18 @@ docker_setup_kde() {
 # Install required packages for kde container
 docker_kde_presetup() {
     # Reset pkg manager sync folder
-    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
 
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME
 
     # Make sure that container has sudo installed with
-    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -Syu --overwrite=*"
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -Syyu --overwrite=*"
     docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Sy ${DOCKER_PKG_KDE}"
 
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME
 
     # Reset pkg manager sync folder
-    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
+    docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
 }
 
 # Always update the main container after updates to get the latest repo changes

@@ -21,17 +21,18 @@ docker_check_environment() {
 
     # Usual check
     if [ "$(grep -q docker /proc/1/cgroup)" = "docker" ]; then
-        message "Building target iso in native system"
-        msg_debug "Running in docker env so no more dockery stuff will be used"
+        msg_debug "Already running in docker env"
         export USE_DOCKER=false
     elif [ "${ID_LIKE}" = "${TOOL_TARGET_DISTRO}" ]; then
-        message "Building target iso in native system"
+        message "Toolset will not use docker"
         export USE_DOCKER=false
-        msg_debug "ISO docker use is ${USE_DOCKER}"
+        msg_debug "Docker use flag is: ${USE_DOCKER}"
     else
-        message "ISO building will be done inside ${TOOL_TARGET_DISTRO} docker env"
-        msg_debug "ISO docker use is ${USE_DOCKER}"
+        message "Toolset will use the following image: ${TOOL_TARGET_DISTRO}"
+        msg_debug "Docker use is ${USE_DOCKER}"
         export USE_DOCKER=true
+
+        # TODO: Move out the iso stuff in docker common
         export DOCKER_FORCED_OPTION="iso_docker_cli"
     fi
 

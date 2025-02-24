@@ -7,6 +7,7 @@ export TOOL_VERSION_CODE='1.0.0.6'
 export TOOL_BUILD=false
 export TOOL_CLEAN=false
 export TOOL_DOCKER=false
+export TOOL_ROOT=$P_ROOT/build/toolset
 export TOOL_OUT=$P_ROOT/out
 export TOOL_TEMP=$TOOL_OUT/tmp
 export TOOL_CHECKS=$TOOL_OUT/checks

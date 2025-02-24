@@ -36,21 +36,21 @@ fi
 
 while (("$#" >= 1)); do
     case "$1" in
-        --) shift 1; break;;
-        -h|--help) show_help;;
-        --aarch64) set_aarch64 && intended;; # TODO finish arch manager and needed edits for docker...
-        -b|--build) TOOL_BUILD=true;;
-        -f|--force-build) echo '--force ' > $TOOL_TEMP/tmpvar001;;
-        --no-extract) echo '--noextract ' > $TOOL_TEMP/tmpvar002;;
-        --shell) itshell_spawn_interactive_shell && clean_tmp;;
-        --kde) echo "${DOCKER_BUILD_CONTAINER_NAME_KDE}" > $TOOL_TEMP/docker001;;
-        --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001;;
-        --mkiso) export intended && iso_build_request dialog;;
-        --mkiso-clean-cli) intended && iso_build_request cli;;
-        --mkiso-plasma-clean-cli) intended && iso_build_request plasma;; # Create LiveOS env with plasma desktop
-        --leave-tmp) echo 'true' > $TOOL_TEMP/.keep_tmp;; # This will be used by docker builder only ( keep away from help menu )
-        -c|--clean) TOOL_CLEAN=true;;
-        --repo-update) echo "WIP" ;;
+        --) shift 1; break ;;
+        -h|--help) show_help ;;
+        --aarch64) set_aarch64 && intended ;; # TODO finish arch manager and needed edits for docker...
+        -b|--build) TOOL_BUILD=true ;;
+        -f|--force-build) echo '--force ' > $TOOL_TEMP/tmpvar001 ;;
+        --no-extract) echo '--noextract ' > $TOOL_TEMP/tmpvar002 ;;
+        --shell) itshell_spawn_interactive_shell && clean_tmp ;;
+        --kde) echo "${DOCKER_BUILD_CONTAINER_NAME_KDE}" > $TOOL_TEMP/docker001 ;;
+        --pkgrel-bump) echo 'TOOL_SKIPBUMP=false' > $TOOL_TEMP/envvar001 ;;
+        --mkiso) export intended && iso_build_request dialog ;;
+        --mkiso-clean-cli) intended && iso_build_request cli ;;
+        --mkiso-plasma-clean-cli) intended && iso_build_request plasma ;; # Create LiveOS env with plasma desktop
+        --leave-tmp) echo 'true' > $TOOL_TEMP/.keep_tmp ;; # This will be used by docker builder only ( keep away from help menu )
+        -c|--clean) TOOL_CLEAN=true ;;
+        --repo-update) repo_start_update ;;
         -d|--docker)
         if [ $# -eq 1 ]; then
                 msg_error "Docker option cant be used alone ( need to be first arg! )"
@@ -131,4 +131,4 @@ case "$TOOL_BUILD" in
         esac
 esac
 
-force_clean_tmp
+clean_tmp

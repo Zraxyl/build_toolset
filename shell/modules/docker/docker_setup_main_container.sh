@@ -70,7 +70,7 @@ docker_create_base_container() {
     --tty \
     -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
     -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
-    ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} /bin/bash
+    ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} /usr/bin/bash
     message "Base container created"
 }
 

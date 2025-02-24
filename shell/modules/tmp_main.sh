@@ -37,7 +37,7 @@ as_user_del() {
 
 clean_tmp() {
     # Clean tmp
-    if [ -f $TOOL_TEMP/.keep_tmp ]; then
+    if [ -d /home/developer ]; then
         msg_debug "Skipping tmp cleaning"
     else
         as_root_del $TOOL_TEMP

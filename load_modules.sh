@@ -8,6 +8,42 @@ source $P_ROOT/build/toolset/shell/modules/variables.sh
 # Load up msg types
 source $P_ROOT/build/toolset/shell/modules/msg_types.sh
 
+# Check for root user before making tmp dir's
+if [[ ! $EUID -ne 0 ]]; then
+        msg_error "User is root and this isn't allowed"
+fi
+
+# Load tmp handler and start it
+# If we add clean tmp too then docker env wont have args that were passed here before
+# So only clean if error is catched by error-handler
+source $P_ROOT/build/toolset/shell/modules/tmp_main.sh
+clean_tmp
+create_tmp
+
+# Feed arch manager for different arch based builds ( WIP )
+source $P_ROOT/build/toolset/shell/modules/arch_manager.sh
+if [ -f $TOOL_TEMP/is_arch ]; then
+    export P_ARCH=$(get_target_arch) # As we may be runned inside container by -d flag
+    export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
+else # Otherwise set up arch flags
+    set_arch
+    export P_ARCH=$(get_target_arch)
+    export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
+fi
+export ARCH=$(cat $TOOL_TEMP/is_arch)
+
+
+# Import local conf
+if [ -f $P_ROOT/local_conf ]; then
+    source $P_ROOT/local_conf
+    message "Local configuration has been loaded now"
+else
+    cp -f $TOOL_ROOT/shell/modules/local_conf.sh $P_ROOT/local_conf
+    message "Local configuration has been copied to $P_ROOT/local_conf"
+    source $P_ROOT/local_conf
+    message "Local configuration has been loaded now"
+fi
+
 ## ------------------------------------------------------------
 # Here we need to notify dev that we have these options enabled
 ## DEPRECATED: REMOVE WHEN READY
@@ -27,21 +63,6 @@ unset BRANCH_TYPE_IS
 ##
 # Resume Loading modules and prompting messages
 ## ------------------------------------------------------------
-
-loaded "Message types"
-
-# Check for root user before making tmp dir's
-if [[ ! $EUID -ne 0 ]]; then
-        msg_error "User is root and this isn't allowed"
-fi
-
-# Load tmp handler and start it
-# If we add clean tmp too then docker env wont have args that were passed here before
-# So only clean if error is catched by error-handler
-source $P_ROOT/build/toolset/shell/modules/tmp_main.sh
-force_clean_tmp
-create_tmp
-loaded "Temp manager"
 
 # Change permissions for some dirs so all users can read/write
 sudo chmod -R a+rw $P_ROOT/build
@@ -69,19 +90,6 @@ loaded "Issue handler"
 # Load up core functions
 source $P_ROOT/build/toolset/shell/modules/main_func.sh
 loaded "Main functions"
-
-# Feed arch manager for different arch based builds ( WIP )
-source $P_ROOT/build/toolset/shell/modules/arch_manager.sh
-if [ -f $TOOL_TEMP/is_arch ]; then
-    export P_ARCH=$(get_target_arch) # As we may be runned inside container by -d flag
-    export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
-else # Otherwise set up arch flags
-    set_arch
-    export P_ARCH=$(get_target_arch)
-    export DOCKER_IMAGE_ARCH=$(cat $TOOL_TEMP/docker_arch)
-fi
-export ARCH=$(cat $TOOL_TEMP/is_arch)
-loaded "Arch manager"
 
 # Load docker support modules
 source $P_ROOT/build/toolset/shell/docker/docker_common.sh
