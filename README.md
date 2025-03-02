@@ -6,7 +6,7 @@
 
 ```
 ## modules deps ( docker, mkiso and builder )
-$ bottle -Syu --needed make cmake docker ninja meson llvm clang bash libisofs libisoburn
+$ bottle -Syu --needed base-devel docker bash libisofs libisoburn dialog git
 ```
 
 ## Getting started
