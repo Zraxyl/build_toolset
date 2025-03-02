@@ -32,6 +32,10 @@ sel_option() {
     echo -e "${ORANGE}[ ATTENTION ]: ${YELLOW}$@${WHITE}"
 }
 
+msg_info() {
+    echo -e "${ORANGE}[ INFO ]: ${YELLOW}$@${WHITE}"
+}
+
 # Lets reduce spam of loading modules message for docker env
 if [ -f "$TOOL_TEMP/is_docker" ]; then
     message "Reloading modules in the background"
@@ -72,6 +76,10 @@ msg_fault() {
 msg_spacer() {
     echo " "
     echo -e ${GREEN}------------------${WHITE}
+    echo " "
+}
+
+msg_newline() {
     echo " "
 }
 

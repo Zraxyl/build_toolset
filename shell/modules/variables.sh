@@ -2,6 +2,7 @@
 # Here we will export all variables
 ##
 
+export TOOL_MAIN_NAME=ZRAXYL
 export TOOL_VERSION_CODE='1.0.0.6'
 
 export TOOL_BUILD=false
@@ -14,7 +15,11 @@ export TOOL_CHECKS=$TOOL_OUT/checks
 export TOOL_SKIPBUMP=true
 export ISO_ROOT=$TOOL_OUT/system_iso
 export TOOL_USER=$(whoami)
-export TOOL_MAIN_NAME=ZRAXYL
+if [ -f /etc/os-release ]; then
+    export $(cat /etc/os-release | grep 'ID_LIKE=')
+    export TOOL_HOST_SYS=${ID_LIKE}
+    unset ID_LIKE
+fi
 export TOOL_TARGET_DISTRO=zraxyl
 
 # Set toolset launch time

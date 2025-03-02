@@ -54,10 +54,11 @@ else
 fi
 
 msg_spacer
-sel_option "ENVSETUP -> ${TOOL_VERSION_CODE}"
-sel_option "T-SYSTEM -> ${TOOL_MAIN_NAME}"
-sel_option "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
-sel_option "DEBUG MODE -> ${SHOW_DEBUG}"
+msg_info "TOOLSET -> ${TOOL_VERSION_CODE}"
+msg_info "H-SYSTEM -> ${TOOL_HOST_SYS}"
+msg_info "T-SYSTEM -> ${TOOL_TARGET_DISTRO}"
+msg_info "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
+msg_info "DEBUG MODE -> ${SHOW_DEBUG}"
 msg_spacer
 unset BRANCH_TYPE_IS
 ##
