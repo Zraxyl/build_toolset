@@ -21,6 +21,19 @@ imgsys_rootfs_to_image() {
     cd ${IMGSYS_WRK} && sudo tar -C rootfs -c . | sudo docker import - ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
 }
 
+imgsys_test() {
+    # Remove old container that was made beforehand
+    sudo docker container rm -f ${DOCKER_IMGSYS_CONTAINER_NAME}
+
+    # Create container from freshly made image
+    imgsys_container_manager
+
+    # Run simple command inside new container ( just to be sure that everything works as needed )
+    set +e
+    docker_run_cmd ${DOCKER_IMGSYS_CONTAINER_NAME} "echo - This is test message from new image container"
+    set -e
+}
+
 imgsys_push() {
     sudo docker image push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
 }
@@ -45,9 +58,15 @@ imgsys_build_base() {
     message "Preparing to remove old image and container"
     imgsys_docker_cleanup
 
-    # import tarball to image
+    # Import tarball to image
     message "Importing final rootfs as image"
     imgsys_rootfs_to_image
+
+    # Test fresly made image before push
+    message "Testing newly made image"
+    imgsys_test
+
+    message "IMGSYS: Finished"
 }
 
 imgsys_build() {
