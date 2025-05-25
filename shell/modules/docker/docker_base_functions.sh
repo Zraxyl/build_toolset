@@ -26,6 +26,9 @@ docker_import() {
 
     message "Removing temporary image"
     docker_remove_image $DOCKER_IMAGE_NAME_TEMP
+
+    message "Removing dangling images"
+    docker_remove_dangling_images
 }
 
 docker_copy_pkgmanager_conf() {

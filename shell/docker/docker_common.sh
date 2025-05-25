@@ -127,6 +127,11 @@ docker_remove_image() {
     sudo docker image rm -f $1
 }
 
+# Remove dangling images
+docker_remove_dangling_images() {
+    sudo docker rmi $(sudo docker images --filter "dangling=true" -q --no-trunc)
+}
+
 # Run cmd in target container as root user
 docker_run_cmd() {
     docker_start_container $1
