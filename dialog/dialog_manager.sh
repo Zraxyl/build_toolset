@@ -1,34 +1,70 @@
 ##
-# Global variables for dialog
+# dialog-manager.sh
+# Exports, preflight checks, static menu with two options, structured logging
 ##
 
-# Main dialog root
-export D_ROOT=$P_ROOT/build/toolset/dialog
+set -euo pipefail
+IFS=$'\n\t'
 
-##
-# Load modules for dialog extension
-##
+########################################
+# 1. Configuration & Environment Exports
+########################################
 
-# Load package builder dialogs ( handles build/clean options )
-source $D_ROOT/modules/package_builder.sh
+# Ensure P_ROOT is defined (set this before invoking the script)
+: "${P_ROOT:?ERROR: P_ROOT must be set to your project root before running dialog-manager.sh}"
 
-##
-# Main functions
-##
+# Base directory for dialog assets
+export D_ROOT="${P_ROOT}/build/toolset/dialog"
+export D_MODULES_DIR="${D_ROOT}/modules"
+export D_TMP_DIR="${D_ROOT}/tmp"
 
-dialog_main() {
-    # clear shell
-    clear
+# Path to the `dialog` binary (override if non‑standard)
+export DIALOG_BIN="${DIALOG_BIN:-/usr/bin/dialog}"
 
-    # prompt dialog menu
-    dialog_menu
+########################################
+# 2. Pre‑flight Dependency Checks
+########################################
 
-    # clear up tmp
-    clean_tmp
-
-    # clear afterwards
-    clear
+preflight() {
+  command -v "$DIALOG_BIN" >/dev/null 2>&1 \
+    || { echo "ERROR: 'dialog' not found at $DIALOG_BIN"; exit 1; }
+  [[ -d "$D_MODULES_DIR" ]] \
+    || { echo "ERROR: Modules directory '$D_MODULES_DIR' is missing"; exit 1; }
+  mkdir -p "$D_TMP_DIR"
 }
+preflight
+
+########################################
+# 3. Structured Logging & Cleanup
+########################################
+
+log() {
+  local lvl=$1; shift
+  printf '[%s] [%s] %s\n' "$(date +'%Y-%m-%dT%H:%M:%S%z')" "$lvl" "$*"
+}
+
+cleanup() {
+  log INFO "Cleaning up temporary state in $D_TMP_DIR"
+  rm -rf "$D_TMP_DIR"/* || true
+}
+trap cleanup EXIT
+
+########################################
+# 4. Load Dialog Modules
+########################################
+
+if [[ -d "$D_MODULES_DIR" ]]; then
+  for module in "$D_MODULES_DIR"/*.sh; do
+    # shellcheck source=/dev/null
+    source "$module"
+  done
+else
+  log WARN "No modules found in $D_MODULES_DIR"
+fi
+
+########################################
+# 5. Static Dialog Menu
+########################################
 
 dialog_menu() {
     # Option text
@@ -46,31 +82,40 @@ dialog_menu() {
     OPTIONS=(
         1 "${OPTION1}"
         2 "${OPTION2}"
-        )
+    )
 
-    CHOICE=$(dialog --clear \
+    CHOICE=$("$DIALOG_BIN" --clear \
                 --backtitle "$BACKTITLE" \
                 --title "$TITLE" \
                 --menu "$MENU" \
-                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT" \
                 "${OPTIONS[@]}" \
                 2>&1 >/dev/tty)
 
     case $CHOICE in
         1)
-            echo "${OPTION1}"
+            log INFO "Selected: ${OPTION1}"
             pkg_dialog_main
-        ;;
-
+            ;;
         2)
-            echo "${OPTION2}"
+            log INFO "Selected: ${OPTION2}"
             dummy_dialog
-        ;;
+            ;;
+        *)
+            log WARN "Invalid selection: '$CHOICE'"
+            ;;
     esac
 }
 
-dummy_dialog() {
-    clean_tmp
+########################################
+# 6. Entry Point
+########################################
 
-    clear
+dialog_main() {
+  clear
+  dialog_menu
+  cleanup
+  clear
 }
+
+dialog_main
