@@ -43,6 +43,18 @@ itshell_pkgbuild_docker_kde() {
     done
 }
 
+itshell_docker_shell() {
+    docker_start_container $DOCKER_BUILD_CONTAINER_NAME
+    sudo docker exec -u root --interactive --tty $DOCKER_BUILD_CONTAINER_NAME bash -c "bash"
+    docker_stop_container $DOCKER_BUILD_CONTAINER_NAME
+}
+
+itshell_docker_kde_shell() {
+    docker_start_container $DOCKER_BUILD_CONTAINER_NAME_KDE
+    sudo docker exec -u root --interactive --tty $DOCKER_BUILD_CONTAINER_NAME_KDE bash -c "bash"
+    docker_stop_container $DOCKER_BUILD_CONTAINER_NAME_KDE
+}
+
 itshell_pkgedit() {
     export PKG_LIST=("${@}")
     export PKGEDIT_LIST=" "
