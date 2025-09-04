@@ -153,7 +153,7 @@ docker_container_sysedit() {
     #export PASSWD='$1$/M2zf0R0$A21DEu1T5lucDorrkv3vQ0'
 
     # Give root user passwd so su can be happy
-    docker_run_cmd ${1} "usermod --password $(echo toor | openssl passwd -1 -stdin) root"
+    docker_run_cmd ${1} 'usermod --password $1$x54QkCxa$cD1GyHo0zjZhmFqUb.2/Y0 root'
 
     # Reset pkg manager sync folder
     docker_run_cmd ${1} "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
@@ -162,7 +162,7 @@ docker_container_sysedit() {
     docker_run_cmd ${1} "useradd developer -G adm,wheel -d /home/developer -M -s /usr/bin/bash"
 
     # Give users passwd so su dosent whine about auth info issues
-    docker_run_cmd ${1} "usermod --password $(echo developer | openssl passwd -1 -stdin) developer"
+    docker_run_cmd ${1} 'usermod --password $1$CHsahPBR$S5HFKq./FenLtDyYTcgBK. developer'
 
     # Run Essentials before anything else
     docker_run_essentials $1
