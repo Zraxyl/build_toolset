@@ -185,7 +185,9 @@ docker_container_sysedit() {
     # Copy over required bottle conf
     docker_copy_pkgmanager_conf ${1}
 
-    docker_run_cmd ${1} "bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/sudo/fix_sudo.sh"
+    docker_run_cmd ${1} "cp -fv /home/developer/$TOOL_MAIN_NAME/build/docker/developing/sudo/sudoers /etc/sudoers"
+    docker_run_cmd ${1} "chown root:root /etc/sudoers"
+    docker_run_cmd ${1} "chmod 440 /etc/sudoers"
 
     # Apply git global changes ( just in case repo tool is used somewhere )
     docker_run_cmd ${1} "git config --global user.email 'developer@zraxyl.com'"
