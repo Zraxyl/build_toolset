@@ -79,8 +79,6 @@ rootfs_defaults() {
     # export ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
     # export NON_ROOT_PASSWORD=$(echo $DISTRO_NAME | openssl passwd -1 -stdin)
 
-    exec_rootfs echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers
-
     message Creating system users
     exec_rootfs systemd-sysusers
 
@@ -101,11 +99,6 @@ rootfs_defaults() {
     exec_rootfs systemctl enable dhcpcd
 
     exec_rootfs systemctl enable getty@tty2
-
-    # Some possible errors may occure with these in some systems
-    #exec_rootfs systemctl disable nghttpx
-    #exec_rootfs systemctl disable systemd-networkd-wait-online.service
-    #exec_rootfs systemctl mask systemd-networkd-wait-online.service
     set -e
 }
 
