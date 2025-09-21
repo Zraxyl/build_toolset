@@ -115,7 +115,7 @@ find_pkg_location() {
         export PKG_PATH=$PKG_ROOT_DIR/xorg/xserver/$PKG_NAME
         export WHAT_AM_I=extra
     else
-        msg_error "$PKG_NAME was not found ( check for typos or if its new category then remember to add entry for it in builder modules )"
+        msg_warning "$PKG_NAME was not found ( check for typos or if its new category then remember to add entry for it in builder modules )"
         msg_error "Issue may also occure if you forgot to mention arch ( see --help )"
 	clean_tmp
     fi

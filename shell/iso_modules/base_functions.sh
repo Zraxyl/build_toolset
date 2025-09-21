@@ -79,6 +79,11 @@ rootfs_defaults() {
     # export ROOT_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
     # export NON_ROOT_PASSWORD=$(echo $DISTRO_NAME | openssl passwd -1 -stdin)
 
+    exec_rootfs echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers
+
+    message Creating system users
+    exec_rootfs systemd-sysusers
+
     message Creating non-root user
     # Lets add non-root user ( with home dir + add to wheel + adm groups )
     exec_rootfs useradd -m -G wheel,adm $DISTRO_NAME
@@ -98,9 +103,9 @@ rootfs_defaults() {
     exec_rootfs systemctl enable getty@tty2
 
     # Some possible errors may occure with these in some systems
-    exec_rootfs systemctl disable nghttpx
-    exec_rootfs systemctl disable systemd-networkd-wait-online.service
-    exec_rootfs systemctl mask systemd-networkd-wait-online.service
+    #exec_rootfs systemctl disable nghttpx
+    #exec_rootfs systemctl disable systemd-networkd-wait-online.service
+    #exec_rootfs systemctl mask systemd-networkd-wait-online.service
     set -e
 }
 
@@ -188,8 +193,16 @@ make_efi() {
     as_root chown -R root mnt/
 
     # make initrd for efi image
-    kver=$(as_root basename $ISO_ROOT/rootfs/system/lib/modules/6.*)
-    as_root dracut --kver $kver -m "base lvm kernel-modules" -a "dmsquash-live" --add-drivers squashfs --filesystems "squashfs ext4 ext3" mnt/initrd.img --force
+    kver=$(as_root basename $ISO_ROOT/rootfs/system/usr/lib/modules/6.*)
+
+    # Let the system generate modules.dep
+    exec_rootfs depmod $kver
+
+    exec_rootfs dracut --kver $kver -m "base lvm kernel-modules" -a "dmsquash-live" --add-drivers squashfs --filesystems "squashfs ext4 ext3" /tmp/initrd.img --force
+
+    sleep 1 && sync
+
+    as_root mv $ISO_ROOT/rootfs/system/tmp/initrd.img mnt/initrd.img
 
     sleep 2 && sync
 

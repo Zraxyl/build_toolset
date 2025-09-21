@@ -12,6 +12,7 @@ itshell_help() {
     msg_spacer
 
     echo "# Build commands"
+    echo " "
 
     message "bc - This will build the package without docker option"
     message "example: 'bc linux glib2'"
@@ -25,6 +26,7 @@ itshell_help() {
     msg_spacer
 
     echo "# Docker shell"
+    echo " "
 
     message "dshell - This will enter you to the build container ( Allows to do changes if needed )"
     message "example: 'dshell'"
@@ -34,7 +36,15 @@ itshell_help() {
 
     msg_spacer
 
+    echo "# Repository managment"
+    echo " "
+    message "update_repo - This will update local repositories with pkg builds"
+    message "example: 'update_repo'"
+
+    msg_spacer
+
     echo "# Other"
+    echo " "
 
     message "pkgedit - This will opne up kate with PKGBUILD issued by pkgname"
     message "example: 'pkgedit bash coreutils util-linux'"

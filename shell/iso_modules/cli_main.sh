@@ -32,9 +32,9 @@ make_cli_rootfs() {
     as_root_del $ISO_ROOT/rootfs/system/usr/lib/lib*.a
 
     # Firmware
-    as_root mv $ISO_ROOT/rootfs/system/lib/firmware/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system
-    as_root_del $ISO_ROOT/rootfs/system/lib/firmware/*
-    as_root mv $ISO_ROOT/rootfs/system/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system/lib/firmware/
+    as_root mv $ISO_ROOT/rootfs/system/usr/lib/firmware/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system
+    as_root_del $ISO_ROOT/rootfs/system/usr/lib/firmware/*
+    as_root mv $ISO_ROOT/rootfs/system/{amd,amdgpu,nvidia} $ISO_ROOT/rootfs/system/usr/lib/firmware/
 
     # strip
     as_root strip --strip-unneeded $ISO_ROOT/rootfs/system/usr/bin/* &> /dev/null

@@ -111,7 +111,7 @@ gui_menu_selection() {
 
     case $CHOICE in
         1) make_plasma_clean_iso ;;
-        2) make_cli_dirty_iso ;;
+        2) make_plasma_dirty_iso ;;
         3) generate_iso ;;
         4) make_efi ;;
         5) full_clean ;;

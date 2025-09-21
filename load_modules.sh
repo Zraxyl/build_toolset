@@ -54,11 +54,12 @@ else
 fi
 
 msg_spacer
-msg_info "TOOLSET -> ${TOOL_VERSION_CODE}"
-msg_info "H-SYSTEM -> ${TOOL_HOST_SYS}"
-msg_info "T-SYSTEM -> ${TOOL_TARGET_DISTRO}"
+msg_info "TOOLSET     -> ${TOOL_VERSION_CODE}"
+msg_info "H-SYSTEM    -> ${TOOL_HOST_SYS}"
+msg_info "T-SYSTEM    -> ${TOOL_TARGET_DISTRO}"
 msg_info "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
-msg_info "DEBUG MODE -> ${SHOW_DEBUG}"
+msg_info "DEVELOPER   -> ${PACKAGER}"
+msg_info "DEBUG MODE  -> ${SHOW_DEBUG}"
 msg_spacer
 unset BRANCH_TYPE_IS
 ##
@@ -116,11 +117,11 @@ loaded "PKG cleaner"
 if [ "${P_ARCH}" = "aarch64" ]; then
     message "Docker - ARM64"
     export DOCKER_PKG="${DOCKER_AARCH64_PKG}"
-    export DOCKER_PKG_KDE="${DOCKER_AARCH64_PKG}"
+    export DOCKER_PKG_KDE="${DOCKER_AARCH64_PKG_KDE}"
 else
     message "Docker - AMD64"
     export DOCKER_PKG="${DOCKER_AMD64_PKG}"
-    export DOCKER_PKG_KDE="${DOCKER_AMD64_PKG}"
+    export DOCKER_PKG_KDE="${DOCKER_AMD64_PKG_KDE}"
 fi
 
 loading "PKG Docker functions..."

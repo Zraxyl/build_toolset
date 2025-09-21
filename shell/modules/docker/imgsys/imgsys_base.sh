@@ -14,7 +14,7 @@ imgsys_image_manager() {
 
 # Run cmd's in docker container
 imgsys_run_cmd() {
-    sudo docker exec --env PATH=/bin:/sbin:/usr/bin:/usr/sbin --env LD_LIBRARY_PATH=/lib64:/lib:/usr/lib --interactive ${DOCKER_IMGSYS_CONTAINER_NAME} ${@}
+    sudo docker exec --env PATH=/bin:/sbin:/usr/bin:/usr/sbin --env LD_LIBRARY_PATH=/usr/lib:/usr/lib64 --interactive ${DOCKER_IMGSYS_CONTAINER_NAME} ${@}
 }
 
 ## Make changes to the container that are needed
@@ -38,9 +38,9 @@ imgsys_container_manager() {
         --volume $P_ROOT:$DOCKER_USER_FOLDER/$TOOL_MAIN_NAME \
         --tty \
         --privileged \
-        -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
+        -e LD_LIBRARY_PATH="/usr/lib:/usr/lib64" \
         -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
-        ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} /bin/bash
+        ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} /usr/bin/bash
     fi
 
     # Start the container
@@ -66,7 +66,7 @@ imgsys_docker_cleanup() {
     sudo docker container rm -f ${DOCKER_IMGSYS_CONTAINER_NAME}
     message "Container removed"
 
-    # Here we need to delete main evolinx image to import new one later on
+    # Here we need to delete main zraxyl image to import new one later on
     sudo docker rmi ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} -f
     message "Image removed"
 }

@@ -3,7 +3,7 @@
 ##
 
 export TOOL_MAIN_NAME=ZRAXYL
-export TOOL_VERSION_CODE='1.0.0.6'
+export TOOL_VERSION_CODE='1.0.0.7-rc2'
 
 export TOOL_BUILD=false
 export TOOL_CLEAN=false
@@ -64,6 +64,11 @@ export INTENDED=idk
 export IGNORE_LOCKUP=yes
 
 export DEV_FOLDER="${P_ROOT}/build/developer"
+
+##
+# ITShell specific exports
+##
+export TOOLSET_ITSHELL=false
 
 ##
 # Distro specific exports
@@ -132,6 +137,3 @@ export IMGSYS_WRK=$TOOL_OUT/imgsys
 ##
 
 export SHOW_DEBUG=true
-
-# This is needed so system catches up with all exports
-sleep 0.1

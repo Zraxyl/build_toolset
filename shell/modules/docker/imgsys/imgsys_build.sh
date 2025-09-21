@@ -22,16 +22,9 @@ imgsys_rootfs_to_image() {
 }
 
 imgsys_test() {
-    # Remove old container that was made beforehand
-    sudo docker container rm -f ${DOCKER_IMGSYS_CONTAINER_NAME}
-
-    # Create container from freshly made image
-    imgsys_container_manager
-
-    # Run simple command inside new container ( just to be sure that everything works as needed )
-    set +e
-    docker_run_cmd ${DOCKER_IMGSYS_CONTAINER_NAME} "echo - This is test message from new image container"
-    set -e
+    if [ ! -f ${IMGSYS_WRK}/rootfs/usr/bin/bash ]; then
+        msg_error "IMGSYS - Rootfs installation hard failed"
+    fi
 }
 
 imgsys_push() {

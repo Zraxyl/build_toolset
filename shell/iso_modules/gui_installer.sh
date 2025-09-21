@@ -124,7 +124,7 @@ installer_defaults() {
 }
 
 # Start from scratch and delete old files
-make_cli_dirty_iso () {
+make_plasma_dirty_iso () {
     message Making dirty iso build
 
     # Prepare proper env

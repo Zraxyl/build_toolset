@@ -34,7 +34,7 @@ itshell_pkgbuild_docker_kde() {
     for (( p=0; p<${#PKG_LIST[@]}; p++ )); do
         PKG_NAME=$(basename "${PKG_LIST[p]}")
 
-        docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME_KDE "cd ~/$TOOL_MAIN_NAME && ./envsetup --leave-tmp -b ${PKG_NAME}"
+        docker_user_run_cmd $DOCKER_BUILD_CONTAINER_NAME_KDE "cd ~/$TOOL_MAIN_NAME && ./envsetup --kde --leave-tmp -b ${PKG_NAME}"
 
         message "BUILD: Starting to reset build container - KDE"
         sleep 5
@@ -74,6 +74,24 @@ itshell_pkgedit() {
     ${TEXT_EDITOR} ${PKGEDIT_LIST}
 }
 
+
+# This function will update issued repositories
+itshell_update_repository() {
+    if [ -z $@ ]; then
+        msg_debug "No specific repo issued, updating all local ones"
+        repo_check_local_repositories
+        repo_update_local_repos
+        return
+    fi
+
+    ocwd="$(pwd)"
+
+    export REPO_LOCAL_LIST=" ${@}"
+    repo_update_local_repos
+
+    cd $ocwd
+
+}
 itshell_reload() {
     # This subfunction will reload all of the toolset modules in the background + restarts the shell
 

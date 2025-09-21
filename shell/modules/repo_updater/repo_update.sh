@@ -6,44 +6,64 @@ repo_update_local_repos() {
     local_repos=${REPO_LOCAL_LIST}
 
     for repo in $local_repos; do
+        msg_newline
         message "Starting to update $repo repository"
-        cd ${REPO_LOCAL_PATH}/$repo/packages
+        msg_debug "Checking if theres packages to add"
 
-        if [ -f $TOOL_OUT/pkgs/$ARCH/$repo/*.pkg.tar.gz ]; then
-            # Copy over newly built packages from out/pkgs
-            cp -fv $TOOL_OUT/pkgs/$ARCH/$repo/*.pkg.tar.gz ${REPO_LOCAL_PATH}/$repo/packages/
-
-            # TODO: Automatically remove older packages ( save up space )
+        if [ ! -d $TOOL_OUT/pkgs/$ARCH/$repo ]; then
+            mkdir -p $TOOL_OUT/pkgs/$ARCH/$repo
         fi
 
-        # Creae temp folder
-        mkdir -p ../temp
+        if [ ! -z "$(ls -A $TOOL_OUT/pkgs/$ARCH/$repo/)" ]; then
+            cd ${REPO_LOCAL_PATH}/$repo/packages
 
-        # Remove older repo db
-        rm -f $repo.db* $repo.files*
+            # Copy over newly built packages from out/pkgs
+            msg_debug "Moving fresh packages to $repo"
+            cp -fv $TOOL_OUT/pkgs/$ARCH/$repo/*.pkg.tar.gz ${REPO_LOCAL_PATH}/$repo/packages/ || message "No new packages to add"
 
-        # Move all packages to temp folder
-        mv *${ARCH}*.pkg.tar.gz ../temp
+            ##
+            # TODO: Automatically remove older packages ( save up space )
+            ##
 
-        repo-add $repo.db.tar.gz ../temp/*${ARCH}*.gz &> ${TOOL_OUT}/toolset_${repo}_${TOOL_TIME}.log
+            # Creae temp folder
+            msg_debug "Crating temp folder for db update"
+            mkdir -p ../temp
 
-        # START OF HACK: Edit repo-add to do this automatically
-        rm $repo.{db,files}
-        cp $repo.db.tar.gz $repo.db
-        cp $repo.files.tar.gz $repo.files
-        # END OF HACK
+            # Remove older repo db
+            msg_debug "Removing old db"
+            rm -f $repo.db* $repo.files*
 
-        # Move packages back to orig place
-        mv ../temp/* .
+            # Move all packages to temp folder
+            msg_debug "Moving packages to temp folder"
+            mv *${ARCH}*.pkg.tar.gz ../temp
 
-        rm -rf ../temp
+            msg_debug "Creating new package databse"
+            repo-add $repo.db.tar.gz ../temp/*${ARCH}*.gz &> ${TOOL_OUT}/toolset_${repo}_${TOOL_TIME}.log
 
-        # Remove cached/temp packages that were built by toolset
-        rm -f $TOOL_OUT/pkgs/$ARCH/$repo/*.pkg.tar.gz
+            # START OF HACK: Edit repo-add to do this automatically
+            rm $repo.{db,files}
+            cp $repo.db.tar.gz $repo.db
+            cp $repo.files.tar.gz $repo.files
+            # END OF HACK: Edit repo-add to do this automatically
 
-        message "$repo - has been updated"
+            # Move packages back to orig place
+            msg_debug "Moving packages+db back to proper place"
+            mv ../temp/* .
+
+            rm -rf ../temp
+
+            # Remove cached/temp packages that were built by toolset
+            msg_debug "Removing older built package backups"
+            rm -f $TOOL_OUT/pkgs/$ARCH/$repo/*.pkg.tar.gz
+
+            message "$repo - has been updated"
+        else
+            message "Theres nothing to add to the repo"
+        fi
         msg_newline
     done
+
+    message "Repositories have been updated"
 }
 
 repo_start_update() {

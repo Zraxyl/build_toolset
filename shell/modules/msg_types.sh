@@ -66,7 +66,10 @@ msg_warning() {
 
 msg_error() {
     echo -e "${RED}[ ERROR ]: ${LRED}$@${WHITE}"
-    exit 1
+
+    if [ "$TOOLSET_ITSHELL" == "false" ]; then
+        exit 1
+    fi
 }
 
 msg_fault() {

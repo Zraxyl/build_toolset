@@ -7,6 +7,11 @@
 ##
 
 ##
+# Makepkg stuff
+##
+PACKAGES='Unknown Developer <unknown@unknown.invalid>'
+
+##
 # Repo target ftp configuration
 ##
 export REPO_USER="none"
