@@ -185,7 +185,7 @@ docker_container_sysedit() {
 
     # Make sure that container has sudo installed with
     docker_run_cmd ${1} "${PACKAGE_MANAGER} --needed --noconfirm --disable-download-timeout -Syy ${DOCKER_PKG}"
-    docker_run_cmd ${1} "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc systemd"
+    docker_run_cmd ${1} "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -S glibc systemd sudo"
 
     # Copy over required bottle conf
     docker_copy_pkgmanager_conf ${1}
