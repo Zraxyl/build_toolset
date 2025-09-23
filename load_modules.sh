@@ -13,6 +13,25 @@ if [[ ! $EUID -ne 0 ]]; then
         msg_error "User is root and this isn't allowed"
 fi
 
+## ------------------------------------------------------------
+# Here we need to notify dev that we have these options enabled
+## DEPRECATED: REMOVE WHEN READY
+if [ "${USE_STAGING}" = "yes" ]; then
+    export BRANCH_TYPE_IS="STAGING"
+else
+    export BRANCH_TYPE_IS="STABLE"
+fi
+
+msg_spacer
+msg_info "TOOLSET     -> ${TOOL_VERSION_CODE}"
+msg_info "H-SYSTEM    -> ${TOOL_HOST_SYS}"
+msg_info "T-SYSTEM    -> ${TOOL_TARGET_DISTRO}"
+msg_info "USER        -> $(whoami)"
+msg_info "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
+msg_info "DEBUG MODE  -> ${SHOW_DEBUG}"
+msg_spacer
+unset BRANCH_TYPE_IS
+
 # Load tmp handler and start it
 # If we add clean tmp too then docker env wont have args that were passed here before
 # So only clean if error is catched by error-handler
@@ -44,24 +63,6 @@ else
     message "Local configuration has been loaded now"
 fi
 
-## ------------------------------------------------------------
-# Here we need to notify dev that we have these options enabled
-## DEPRECATED: REMOVE WHEN READY
-if [ "${USE_STAGING}" = "yes" ]; then
-    export BRANCH_TYPE_IS="STAGING"
-else
-    export BRANCH_TYPE_IS="STABLE"
-fi
-
-msg_spacer
-msg_info "TOOLSET     -> ${TOOL_VERSION_CODE}"
-msg_info "H-SYSTEM    -> ${TOOL_HOST_SYS}"
-msg_info "T-SYSTEM    -> ${TOOL_TARGET_DISTRO}"
-msg_info "BRANCH TYPE -> ${BRANCH_TYPE_IS}"
-msg_info "DEVELOPER   -> ${PACKAGER}"
-msg_info "DEBUG MODE  -> ${SHOW_DEBUG}"
-msg_spacer
-unset BRANCH_TYPE_IS
 ##
 # Resume Loading modules and prompting messages
 ## ------------------------------------------------------------
