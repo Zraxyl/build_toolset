@@ -5,16 +5,23 @@
 
 imgsys_image_manager() {
     # Check for existing image and download if missing
-        if [ $(sudo docker image ls -a | grep -wo ${DOCKER_IMAGE_NAME}) = "${DOCKER_IMAGE_NAME}" ]; then
-            message "Image found and not pulling it again"
-        else
-            sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
-        fi
+    export IS_MISSING=$(sudo docker image ls -a | grep -wo ${DOCKER_IMAGE_NAME})
+    if [ "${IS_MISSING}" = "${DOCKER_IMAGE_NAME}" ]; then
+        message "IMGSYS - Image found and not pulling it again"
+    else
+        sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
+    fi
+    unset IS_MISSING
 }
 
 # Run cmd's in docker container
 imgsys_run_cmd() {
     sudo docker exec --env PATH=/bin:/sbin:/usr/bin:/usr/sbin --env LD_LIBRARY_PATH=/usr/lib:/usr/lib64 --interactive ${DOCKER_IMGSYS_CONTAINER_NAME} ${@}
+}
+
+# Run command in target rootfs
+imgsys_target_run() {
+    sudo base-chroot ${IMGSYS_WRK}/rootfs ${@}
 }
 
 ## Make changes to the container that are needed
@@ -28,9 +35,9 @@ imgsys_system_setup() {
 
 imgsys_container_manager() {
     if [ "$(sudo docker container ls -a | grep -wo ${DOCKER_IMGSYS_CONTAINER_NAME})" = "${DOCKER_IMGSYS_CONTAINER_NAME}" ]; then
-        message "Work container already imported, so lets skip"
+        message "IMGSYS - Work container already imported, so lets skip"
     else
-        message "Work container seems to be missing, so lets make it"
+        message "IMGSYS - Work container seems to be missing, so lets make it"
 
         # Create the container
         sudo docker container create \
@@ -38,13 +45,14 @@ imgsys_container_manager() {
         --volume $P_ROOT:$DOCKER_USER_FOLDER/$TOOL_MAIN_NAME \
         --tty \
         --privileged \
-        -e LD_LIBRARY_PATH="/usr/lib:/usr/lib64" \
+        -e LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/lib64" \
         -e PATH="/bin:/sbin:/usr/bin:/usr/sbin" \
-        ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} /usr/bin/bash
+        ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} \
+        /usr/bin/bash
     fi
 
     # Start the container
-    message "Starting the container"
+    message "IMGSYS - Starting the container"
     sudo docker start ${DOCKER_IMGSYS_CONTAINER_NAME}
 
     sleep 2
@@ -64,9 +72,9 @@ imgsys_docker_health_check() {
 imgsys_docker_cleanup() {
     # Remove imgsys container as we dont need it anymore
     sudo docker container rm -f ${DOCKER_IMGSYS_CONTAINER_NAME}
-    message "Container removed"
+    message "IMGSYS - Container removed"
 
     # Here we need to delete main zraxyl image to import new one later on
     sudo docker rmi ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH} -f
-    message "Image removed"
+    message "IMGSYS - Image removed"
 }

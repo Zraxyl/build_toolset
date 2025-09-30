@@ -3,7 +3,7 @@ docker_check_build_container_kde() {
     export CHECKIT2=$(sudo docker container ls -a | grep -wo $DOCKER_BUILD_CONTAINER_NAME_KDE)
 
     if [ -z ${CHECKIT2} ]; then
-        CHECKIT="empty"
+        export CHECKIT2="empty"
     fi
 
     if [ "${CHECKIT2}" = "$DOCKER_BUILD_CONTAINER_NAME_KDE" ]; then
@@ -14,6 +14,8 @@ docker_check_build_container_kde() {
         docker_start_container $DOCKER_BUILD_CONTAINER_NAME_KDE
 
     fi
+
+    unset CHECKIT2
 }
 
 docker_export_kde_container() {

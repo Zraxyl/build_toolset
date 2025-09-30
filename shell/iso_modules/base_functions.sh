@@ -88,8 +88,8 @@ rootfs_defaults() {
 
     message Setting root and non-root user password
     # Lets set password for root and non-root
-    exec_rootfs usermod --password $(echo toor | openssl passwd -1 -stdin) root
-    exec_rootfs usermod --password $(echo $DISTRO_NAME | openssl passwd -1 -stdin) $DISTRO_NAME
+    exec_rootfs usermod --password '$1$7aQvtxuN$.pMcumJmslEsaX8Jyn9Cr.' root
+    exec_rootfs usermod --password '$1$aa1TCvCa$Mz6xhIurDbCYCJ3y6o/cZ1' $DISTRO_NAME
 
     message Copying over bashrc for root user
     # Now copy over bashrc for root user
@@ -110,7 +110,7 @@ make_base_iso() {
     mkdir -pv syslinux
 
     # Copy over bios dependent files form syslinux
-    cp -fv /usr/share/syslinux/{isolinux.bin,{ldlinux,libcom32,libmenu,libutil,linux,menu,vesa,vesainfo,vesamenu,whichsys}.c32} syslinux/
+    cp -fv /usr/lib/syslinux/{isolinux.bin,{ldlinux,libcom32,libmenu,libutil,linux,menu,vesa,vesainfo,vesamenu,whichsys}.c32} syslinux/
     cp -fv $P_ROOT/build/toolset/iso/isolinux.cfg syslinux/
 
     # make other dir's
@@ -221,8 +221,10 @@ generate_iso() {
     as_root_del $P_ROOT/$DISTRO_NAME.iso
 
     as_root xorriso -as mkisofs \
-    -r -V "installer" \
-    -J -J -joliet-long -cache-inodes \
+    -r -V "INSTALLER" \
+    -J \
+    -isohybrid-gpt-basdat \
+    -isohybrid-apm-hfsplus \
     -b syslinux/isolinux.bin \
     -no-emul-boot -boot-load-size 4 -boot-info-table\
     -eltorito-alt-boot -eltorito-platform efi -eltorito-boot \

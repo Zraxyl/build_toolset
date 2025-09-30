@@ -3,7 +3,7 @@ docker_check_base_container() {
     export CHECKIT4=$(sudo docker container ls -a | grep -wo ${DOCKER_IMAGE_NAME})
 
     if [ -z ${CHECKIT4} ]; then
-        CHECKIT="empty"
+        export CHECKIT4="empty"
     fi
 
     if [ "${CHECKIT4}" = "${DOCKER_IMAGE_NAME}" ]; then
@@ -14,6 +14,8 @@ docker_check_base_container() {
         docker_start_container $DOCKER_BASE_CONTAINER_NAME
         docker_base_container_sysedit
     fi
+
+    unset CHECKIT4
 }
 
 docker_base_container_sysedit() {

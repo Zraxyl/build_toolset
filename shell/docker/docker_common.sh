@@ -47,8 +47,10 @@ docker_image_check() {
     if [ "${USE_DOCKER}" = "false" ]; then
         docker_start_service
 
+        export IS_MISSING=$(sudo docker image ls -a | grep -o ${DOCKER_IMAGE_NAME})
+
         # Check for existing image download
-        if [[ "$(sudo docker image ls -a | grep -o ${DOCKER_IMAGE_NAME})" = "${DOCKER_IMAGE_NAME}" ]]; then
+        if [[ "${IS_MISSING}" = "${DOCKER_IMAGE_NAME}" ]]; then
             message "Base Image has already been pulled, skipping..."
         else
             message "Pulling base image"
@@ -59,6 +61,7 @@ docker_image_check() {
                 sudo docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_ARCH}
             fi
         fi
+        unset IS_MISSING
     fi
 }
 
@@ -89,9 +92,7 @@ docker_run_essentials() {
     msg_debug "DOCKER: Updating target ldconfig"
 
     # Update ldconfig cache
-    set +e
     sudo docker exec -u root --interactive $1 bash -c "ldconfig"
-    set -e
 }
 
 # Start target container
@@ -149,6 +150,9 @@ docker_user_run_cmd() {
 }
 
 docker_container_sysedit() {
+    # Run Essentials before anything else
+    docker_run_essentials $1
+
     # Reset pkg manager sync folder
     docker_run_cmd ${1} "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
 
@@ -158,9 +162,6 @@ docker_container_sysedit() {
     # Give users passwd so su dosent whine about auth info issues
     docker_run_cmd ${1} 'echo "root:toor" | chpasswd'
     docker_run_cmd ${1} 'echo "developer:developer" | chpasswd'
-
-    # Run Essentials before anything else
-    docker_run_essentials $1
 
     # Copy over required bottle conf
     docker_copy_pkgmanager_conf ${1}
@@ -185,9 +186,8 @@ docker_container_sysedit() {
     # Copy over required bottle conf
     docker_copy_pkgmanager_conf ${1}
 
-    docker_run_cmd ${1} "cp -fv /home/developer/$TOOL_MAIN_NAME/build/docker/developing/sudo/sudoers /etc/sudoers"
-    docker_run_cmd ${1} "chown root:root /etc/sudoers"
-    docker_run_cmd ${1} "chmod 440 /etc/sudoers"
+    # Sudoers failsafe
+    docker_run_cmd ${1} "bash -c /home/developer/$TOOL_MAIN_NAME/build/docker/developing/sudo/fix_sudo.sh"
 
     # Apply git global changes ( just in case repo tool is used somewhere )
     docker_run_cmd ${1} "git config --global user.email 'developer@zraxyl.com'"

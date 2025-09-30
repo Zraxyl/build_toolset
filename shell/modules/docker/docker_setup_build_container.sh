@@ -3,7 +3,7 @@ docker_check_build_container() {
     export CHECKIT1=$(sudo docker container ls -a | grep -wo $DOCKER_BUILD_CONTAINER_NAME)
 
     if [ -z ${CHECKIT1} ]; then
-        CHECKIT="empty"
+        export CHECKIT1="empty"
     fi
 
     if [ "${CHECKIT1}" = "$DOCKER_BUILD_CONTAINER_NAME" ]; then
@@ -13,6 +13,8 @@ docker_check_build_container() {
         docker_build_setup
         docker_start_container $DOCKER_BUILD_CONTAINER_NAME
     fi
+
+    unset CHECKIT1
 }
 
 docker_export_base() {

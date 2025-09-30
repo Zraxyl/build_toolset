@@ -9,12 +9,17 @@ imgsys_make_env () {
 }
 
 imgsys_cleanup_env() {
-    message "Cleaning up environment"
+    message "IMGSYS - Cleaning up environment"
     as_root_del ${IMGSYS_WRK}/rootfs
 }
 
 imgsys_strap_base() {
+    # Strap fresh rootfs
     imgsys_run_cmd "base-strap /home/developer/$TOOL_MAIN_NAME/out/imgsys/rootfs base-chroot"
+
+    # Some misc changes
+    imgsys_target_run "ldconfig"
+    imgsys_target_run "rm -rf /var/lib/${PACKAGE_MANAGER}/sync/*"
 }
 
 imgsys_rootfs_to_image() {
@@ -24,6 +29,8 @@ imgsys_rootfs_to_image() {
 imgsys_test() {
     if [ ! -f ${IMGSYS_WRK}/rootfs/usr/bin/bash ]; then
         msg_error "IMGSYS - Rootfs installation hard failed"
+    else
+        message "IMGSYS - Rootfs is installed"
     fi
 }
 
@@ -40,30 +47,30 @@ imgsys_build_base() {
     fi
 
     # Prepare env in tmp
-    message "Preparing env"
+    message "IMGSYS - Preparing env"
     imgsys_make_env
 
     # strap new rootfs
-    message "Strapping new rootfs base"
+    message "IMGSYS - Strapping new rootfs base"
     imgsys_strap_base
 
     # Remove previously pulled image
-    message "Preparing to remove old image and container"
+    message "IMGSYS - Preparing to remove old image and container"
     imgsys_docker_cleanup
 
     # Import tarball to image
-    message "Importing final rootfs as image"
+    message "IMGSYS - Importing final rootfs as image"
     imgsys_rootfs_to_image
 
     # Test fresly made image before push
-    message "Testing newly made image"
+    message "IMGSYS - Testing newly made image"
     imgsys_test
 
-    message "IMGSYS: Finished"
+    message "IMGSYS - Finished"
 }
 
 imgsys_build() {
-    message "Building image for ${ARCH}"
+    message "IMGSYS - Building image for ${ARCH}"
     imgsys_build_base
 
     # This requires user to be signed into docker beforehand
