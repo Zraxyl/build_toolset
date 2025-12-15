@@ -70,6 +70,8 @@ docker_kde_presetup() {
 docker_update_kde() {
     docker_copy_pkgmanager_conf $DOCKER_KDE_CONTAINER_NAME
 
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "dbus-uuidgen > /etc/machine-id"
+
     # Make sure that container has sudo installed
     docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout -Syu --overwrite=*"
     docker_run_cmd $DOCKER_KDE_CONTAINER_NAME "${PACKAGE_MANAGER} --noconfirm --disable-download-timeout --needed -Sy ${DOCKER_PKG} ${DOCKER_PKG_KDE}"

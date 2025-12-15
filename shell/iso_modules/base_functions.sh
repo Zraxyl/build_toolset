@@ -88,8 +88,8 @@ rootfs_defaults() {
 
     message Setting root and non-root user password
     # Lets set password for root and non-root
-    exec_rootfs usermod --password '$1$7aQvtxuN$.pMcumJmslEsaX8Jyn9Cr.' root
-    exec_rootfs usermod --password '$1$aa1TCvCa$Mz6xhIurDbCYCJ3y6o/cZ1' $DISTRO_NAME
+    as_root chroot $ISO_ROOT/rootfs/system usermod --password "$(echo toor | openssl passwd -1 -stdin)" root
+    as_root chroot $ISO_ROOT/rootfs/system usermod --password "$(echo $DISTRO_NAME | openssl passwd -1 -stdin)" zraxyl
 
     message Copying over bashrc for root user
     # Now copy over bashrc for root user
@@ -110,7 +110,8 @@ make_base_iso() {
     mkdir -pv syslinux
 
     # Copy over bios dependent files form syslinux
-    cp -fv /usr/lib/syslinux/{isolinux.bin,{ldlinux,libcom32,libmenu,libutil,linux,menu,vesa,vesainfo,vesamenu,whichsys}.c32} syslinux/
+    # Bios boot is only supported for the live systems where as installed system should use U/EFI boot with sdboot
+    cp -fv $ISO_ROOT/rootfs/system/usr/lib/syslinux/{isolinux.bin,{ldlinux,libcom32,libmenu,libutil,linux,menu,vesa,vesainfo,vesamenu,whichsys}.c32} syslinux/
     cp -fv $P_ROOT/build/toolset/iso/isolinux.cfg syslinux/
 
     # make other dir's
@@ -177,8 +178,8 @@ make_efi() {
 
     # Install EFI binaries
     as_root mkdir -pv mnt/EFI/{BOOT,systemd}
-    as_root cp -fv /usr/lib/systemd/boot/efi/systemd-bootx64.efi mnt/EFI/BOOT/BOOTX64.EFI
-    as_root cp -fv /usr/lib/systemd/boot/efi/systemd-bootx64.efi mnt/EFI/systemd/systemd-bootx64.efi
+    as_root cp -fv $ISO_ROOT/rootfs/system/usr/lib/systemd/boot/efi/systemd-bootx64.efi mnt/EFI/BOOT/BOOTX64.EFI
+    as_root cp -fv $ISO_ROOT/rootfs/system/usr/lib/systemd/boot/efi/systemd-bootx64.efi mnt/EFI/systemd/systemd-bootx64.efi
 
     # Copy over default laoder configs
     as_root cp -rfv $P_ROOT/build/toolset/iso/loader mnt/

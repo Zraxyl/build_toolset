@@ -24,6 +24,8 @@ docker_base_container_sysedit() {
 
     set +e
 
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "dbus-uuidgen > /etc/machine-id"
+
     export UNI_PASSWORD=$(echo toor | openssl passwd -1 -stdin)
 
     # Add developer user ( used to build pkg's without root
@@ -81,6 +83,8 @@ docker_base_update() {
     docker_start_container $DOCKER_BASE_CONTAINER_NAME
 
     docker_copy_pkgmanager_conf $DOCKER_BASE_CONTAINER_NAME
+
+    docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "dbus-uuidgen > /etc/machine-id"
 
     docker_run_cmd $DOCKER_BASE_CONTAINER_NAME "${PACKAGE_MANAGER} -Syu --needed --noconfirm --disable-download-timeout --overwrite=*"
 

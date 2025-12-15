@@ -35,3 +35,7 @@ install_dep() {
     msg_spacer
     touch $TOOL_TEMP/.builder_locked
 }
+
+resolve_buildorder() {
+    unimplemented "UNFINISHED buildorder function"
+}

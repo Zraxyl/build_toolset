@@ -37,7 +37,7 @@ repo_update_local_repos() {
             msg_debug "Moving packages to temp folder"
             mv *${ARCH}*.pkg.tar.gz ../temp
 
-            msg_debug "Creating new package databse"
+            msg_debug "Creating new package database"
             repo-add $repo.db.tar.gz ../temp/*${ARCH}*.gz &> ${TOOL_OUT}/toolset_${repo}_${TOOL_TIME}.log
 
             # START OF HACK: Edit repo-add to do this automatically
