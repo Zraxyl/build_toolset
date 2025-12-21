@@ -58,6 +58,18 @@ full_clean() {
     as_root_del $ISO_ROOT
 }
 
+# Clean raw rootfs when needed
+pre_clean() {
+    message Cleaning up raw rootfs
+
+    # Check atleast 3 times before returning to deleting things
+    if [ -d $ISO_ROOT/rootfs/system/sys/class ]; then
+        rootfs_umount
+    fi
+
+    as_root rm -rf $ISO_ROOT/rootfs/system
+}
+
 # Make base structure of iso
 prepare_iso_env() {
     mkdir -p $ISO_ROOT/{iso,efi/mnt}

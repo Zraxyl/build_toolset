@@ -109,6 +109,9 @@ make_plasma_clean_iso () {
     # Make final squashfs of rootfs
     make_iso_squashfs
 
+    # Cleanup raw rootfs as we have squashfs now
+    pre_clean
+
     # Finally generate iso
     generate_iso
 }
